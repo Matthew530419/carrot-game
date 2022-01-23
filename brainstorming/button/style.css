@@ -1,0 +1,11 @@
+body {
+  background-color: lightgrey;
+}
+
+.play {
+  font-size: 30px;
+}
+
+#timer {
+  font-size: 30px;
+}
