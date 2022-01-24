@@ -130,3 +130,7 @@ console.log(`X: ${x}px, Y: ${y}px`);
 `initGame();`
 
 - In case of all codes, Please refer file named `basic-application/main.js`.
+
+#### 4-4 Middle level output with random function
+
+- <img src="./img/basic-application/output1.png" width="700" height="400">

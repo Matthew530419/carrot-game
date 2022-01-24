@@ -8,13 +8,13 @@
 
 - Image of carrots should be deleted when clicking the image. In case of carrot image empty before timeout, winner pop up message should be operated with icon of replay. In contrast, in case of clicking insect image, loser pop up message should be operated with icon of replay.
 
-- <img src="./img/output1.png" width="700" height="400">
+- <img src="./img/brainstroming/output1.png" width="700" height="400">
 
 ### 1. Timer
 
 - `div` box could be needed to display timer and id is also assigned on tag of box to operate uniqe box regardless of other boxs on javascript. Use mutable variable with keyword named `let` because counter value should be changed per 1s. Please refer image for good understanding of values per type as below.
 
-- <img src="./img/types.png" width="700" height="400">
+- <img src="./img/brainstroming/types.png" width="700" height="400">
 
 #### 1-1. Javascript file
 
@@ -35,7 +35,7 @@
 
 #### 1-2. Output
 
-- <img src="./img/output2.png" width="300" height="300">
+- <img src="./img/brainstroming/output2.png" width="300" height="300">
 
 ### 2. Start and Pause buttons
 
@@ -75,8 +75,8 @@
 
 #### 2-3. Output
 
-- <img src="./img/output3.png" width="300" height="300">
-  <img src="./img/output4.png" width="300" height="300">
+- <img src="./img/brainstroming/output3.png" width="300" height="300">
+  <img src="./img/brainstroming/output4.png" width="300" height="300">
 
 ### 3. Coordinates with buttons between named started and stopped
 
@@ -166,11 +166,11 @@
 
 - Operating after clicking started button.
 
-  <img src="./img/output5.png" width="300" height="300">
+  <img src="./img/brainstroming/output5.png" width="300" height="300">
 
 - Stopped when clicking stopped button
 
-  <img src="./img/output6.png" width="300" height="300">
+  <img src="./img/brainstroming/output6.png" width="300" height="300">
 
 ### 4. Coordinates with button and random function
 
@@ -210,7 +210,7 @@
 
 #### 4-2. Output
 
-- <img src="./img/output7.png" width="300" height="300">
+- <img src="./img/brainstroming/output7.png" width="300" height="300">
 
 ### 5. Resolution of failures
 
