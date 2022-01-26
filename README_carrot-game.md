@@ -97,8 +97,10 @@
 
 - In case assigned reference like `item.style.position` should be refered and value is `'absolute'`, datas of `field.appendchild(item);` should be positioned on default coordinates like direction of northwest. In case of `appendChild`, `field` of `field.appendchild(item)` is parent node of `item`. The parent node has default value of position named `static` if not any other configured position. So, the parent node should be changed to `relative` to position icons on the area of `field`. Please consider image size when declaring variables related with coordinate. It is possible for image to be outside the area of `field` if not considered.
 
+- In case you type `document.querySelector('.className')`, do not forget `.`of`(.className)`.
+
 -`'use strict';`
-`const field` = document.querySelector('.game\_\_field');
+`const field` = document.querySelector(`'.game__field'`);
 `const fieldRect` = `field.getBoundingClientRect();`
 `const carrotSize = 80;`
 `function initGame()` {
@@ -134,3 +136,46 @@ console.log(`X: ${x}px, Y: ${y}px`);
 #### 4-4 Middle level output with random function
 
 - <img src="./img/basic-application/output1.png" width="700" height="400">
+
+#### 4-5. Timer
+
+- Common variables should be defined to make value easier to be changed efficiently, such as `GAME_DURATION_SEC`, `timer`. In addtion, function variables would use the common variables, such as `let RemaningTimeSec = GAME_DURATION_SEC;`. `setInterval()` and `clearInterval()` should be used to creat timer not only could keep running a task forever until end of conditions but also could stop interval when end of conditions within if loop. `Math.floor()` returns the largest integer value ignoring 0.xxx. `updateTimeText` function is callback function and use parameter named `time` as `RemainingTimeSec`. `--` of `updateTimeText(--RemainingTimeSec)` means minus(-) should be applied to parameter before operation of `updateTimeText` function. parameter of `updateTimeText` should be applied to `--RemainingTimeSec`, rather than `RemainingTimeSec` because `updateTimeText(RemainingTimeSec)` was already built above setInterval function.
+
+- `const gameTimer` = `document.querySelector('.game__timer');`
+  `const GAME_DURATION_SEC` = 10;
+  `let timer` = undefined;
+  `function startGame()` {
+  `startGameTimer();`
+  }
+  `function startGameTimer`() {
+  `let RemainingTimeSec` = `GAME_DURATION_SEC;`
+  `updateTimeText`(RemainingTimeSec);
+  `timer` = `setInterval`(() => {
+  `if(RemainingTimeSec <= 0)` {
+  `clearInterval();`
+  `return;`
+  }
+  `updateTimeText`(`--`RemainingTimeSec);
+  }, `1000`);
+  }
+  `function updateTimeText`(`time`) {
+  `const Minute` = `Math.floor`(`time` / 60);
+  `const Sec` = `time` % 60;
+  `gameTimer.innerText` = `${Minute} : ${Sec}`;
+  }
+
+- In case of all codes, Please refer file named `basic-application/main.js`.
+
+#### 5. Resolution of failures
+
+- symptom: icons of not only carrot but also bug were positioned in rows. I did not use `item.style.position: 'absolute';`. In case of using `field.style.position: 'relative';`, icons would be positioned in rows even though I apply random function to coordinates because parent node of `field` named ` game__header` use `display: flex;`. Field element is also affected by `display: flex`.
+
+- <img src="./img/error2.png" width="700" height="400">
+
+- countermeasure: use `item.style.position: 'absolute';` to position item dependently itself without influence of parent element.
+
+- symptom: type error message was displayed on console tab. However, icons were placed randomly and correctly on field element. It means normal operation but displayed type error message named `Cannot read properties of null (reading 'classList') at showStopBtn.` The meaning of error message is similar that classList of showStopBtn is not found.
+
+- <img src="./img/error1.png" width="700" height="400">
+
+- countermeasure: I will check...
