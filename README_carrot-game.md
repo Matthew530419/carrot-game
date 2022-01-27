@@ -174,8 +174,48 @@ console.log(`X: ${x}px, Y: ${y}px`);
 
 - countermeasure: use `item.style.position: 'absolute';` to position item dependently itself without influence of parent element.
 
-- symptom: type error message was displayed on console tab. However, icons were placed randomly and correctly on field element. It means normal operation but displayed type error message named `Cannot read properties of null (reading 'classList') at showStopBtn.` The meaning of error message is similar that classList of showStopBtn is not found.
+- symptom: type error message was displayed on console tab. However, icons were placed randomly and correctly on field element. It means normal operation but displayed type error message named `Cannot read properties of null (reading 'classList') at showStopBtn.` The meaning of error message is that classList of showStopBtn is not found.
+
+- We should check operation sequences regarding classList according to clicking event.
+
+- First, clicking start Btn.
+
+  1. click 'play' button(started = false)
+  2. call startGame()
+  3. call initGame()
+  4. call showStopBtn()
+  5. execute const icon = document.querySelector('.fa-play') -> current class = 'fa-play'
+  6. execute icon.classList.add('fa-stop') -> current class = 'fa-play' and 'fa-stop'
+  7. execute icon.classList.remove('fa-play') -> current class = 'fa-stop'
+  8. Btn image changed from 'play' to 'stop'
+
+- second, clicking stop Btn.
+
+  1. click 'stop' button(started = true)
+  2. call stopGame()
+  3. call initGame()
+  4. call showStartBtn()
+  5. execute const icon = document.querySelector('.fa-stop') -> current class = 'fa-stop'
+  6. execute icon.classList.add('fa-play') -> current class = 'fa-stop' and 'fa-play'
+  7. execute icon.classList.remove('fa-stop') -> current class = 'fa-play'
+  8. Btn image changed from 'stop' to 'play'
+
+- There are two type of this error message. First, functions related with the fucntion named showStopBtn are not defined correctly. In my case, toggle is not defined at addEventListener and not only `if(!started) {return;}` but also `const icon = document.querySelector('fa-stop');` is added within `showStartBtn()`. Second, duplicated function `stopGame()` is declared once again on main loop. The same error message cold occurred even though root causes did not come from at `showStopBtn()`.
 
 - <img src="./img/error1.png" width="700" height="400">
 
-- countermeasure: I will check...
+- countermeasure:
+
+  1. Toggle Btn is applied to addEventListener, such as `gameBtn.addEventListner('click', ()=> {if(started) {stopGame();} else {startGame();} started=!started`. In addition, `if(!started){return;}` and `const icon = document.querySelector('fa-stop');` is added within `showStartBtn()`.
+  2. Check duplicated same function such as `stopGame()`.
+
+- symptom: type error message was displayed on console tab. In addition, icons were not placed randomly when clicking stop button. It displayed type error message named `Failed to execute 'addEventListener' on 'EventTarget':2 arguments required, but only 1 present.` `EventListener` needs 2 arguments such as type and function. For example, `type` use as `'click'` and `function` use as `callback`.
+  I mis-use `const icon = document.addEventListener('.fa-stop');` at `showStartBtn()`.
+
+- <img src="./img/error3.png" width="700" height="400">
+
+- I checked cause of type error on source tab.
+
+- <img src="./img/source1.png" width="700" height="400">
+
+- countermeasure: `const icon = document.addEventListener('.fa-stop');` should be changed to `const icon = document.querySelector('.fa-stop');`
