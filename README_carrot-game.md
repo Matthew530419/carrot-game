@@ -1,6 +1,6 @@
 ### 1. Project name: Creating application of carrot-game
 
-### 2. Period : 2 day
+### 2. Period : 4 day
 
 ### 3. Concept of game
 
@@ -93,26 +93,49 @@
 
 - The reason why I use `'use strict'` is that javascript language is very flexible, so you can assign value of variable even though the variable is not defined. `'use strict'` helps assign value of variable after you define variable. Type error would be displayed on console if you do not define variable when use `'use strict'`.
 
-- In case you want to use images in undefined state on HTML structure, use `createElement()` and `setAttribute()` on function. Tags and their attributes should be defined on the lowest function such as for loop to hide undefined value. In addtion, function could have more than two arguments.
+- In case you want to use images on HTML structure with undefined state not yet, use `createElement('img')` and `setAttribute()` on function. Tags and their attributes should be defined on the lowest function such as `for loop` to hide undefined value and use as local declaration. In addtion, function could have more than two arguments.
 
-- In case assigned reference like `item.style.position` should be refered and value is `'absolute'`, datas of `field.appendchild(item);` should be positioned on default coordinates like direction of northwest. In case of `appendChild`, `field` of `field.appendchild(item)` is parent node of `item`. The parent node has default value of position named `static` if not any other configured position. So, the parent node should be changed to `relative` to position icons on the area of `field`. Please consider image size when declaring variables related with coordinate. It is possible for image to be outside the area of `field` if not considered.
+- In case assigned reference like `item.style.position` should be refered and the value is `'absolute'`, datas of `field.appendchild(item);` should be positioned on default coordinates like direction of northwest. In case of `appendChild`, `field` of `field.appendchild(item)` is parent node of `item`. The parent node has default value of position named `static` if not any other configured position. So, the parent node should be changed to `relative` to position icons on the area of `field`. Please consider image size when declaring variables related with coordinate. It is possible for image to be outside the area of `field` if not considered.
 
-- In case you type `document.querySelector('.className')`, do not forget `.`of`(.className)`.
+- In case you type `document.querySelector('.className')`, do not forget `.`of`(.className)`. Global variable is useful to use value as counter, size, and so on. You can only change value of global variable when this value used on many kind of functions.
+
+- Toggle switch is very useful to play and restore application when clicking button. If loop is also very useful. In addition, do not hesitate to use a variety of functions to get correct outputs and operate normally. The most important thing is to operate this application normally. And then, refactorying could be possible to optimize memory. Please be careful regarding duplicated function on there when use many kinds of functions. In case you want to initialize some of area, use `element.innerHTML = template literal * 2`.
 
 -`'use strict';`
 `const field` = document.querySelector(`'.game__field'`);
 `const fieldRect` = `field.getBoundingClientRect();`
-`const carrotSize = 80;`
+`const gameBtn` = document.querySelector(`'.game__button'`);
+`const Carrot_Size` = 80;
+`const Carrot_Count` = 10;
+`const Bug_Count` = 10;
+`let started = false;`
+`gameBtn.addEventListener`('click', ()=> {
+`if (started)` {
+`stopGame();`
+} `else` {
+`startGame();`
+}
+`started = !started;`
+})
+`function stopGame()` {
+` field.innerHTML= ``; `
+`showStartBtn();`
+`hideTimerandScore();`
+}
+`function startGame()` {
+`showStopBtn();`
+`showTimerAndScore();`
+`initGame();`
+}
 `function initGame()` {
-console.log(fieldRect);
-`addItem('carrot', 5, 'img/carrot.png');`
-`addItem('bug', 5, 'img/bug.png');`
+`addItem('carrot', Carrot_Count, 'img/carrot.png');`
+`addItem('bug', Bug_Count, 'img/bug.png');`
 }
 `function addItem(className, count, imgPath)` {
-const x1 = 0;
+const x1 = 0
 const y1 = 0;
-`const x2 = fieldRect.width - carrotSize;`
-`const y2 = fieldRect.height - carrotSize;`
+`const x2 = fieldRect.width - Carrot_Size;`
+`const y2 = fieldRect.height - Carrot_Size;`
 `for(let i=0; i < count; i++)` {
 `const item = document.createElement('img');`
 `item.setAttribute('class', className);`
@@ -123,13 +146,11 @@ const y1 = 0;
 item.style.left = `${x}px`;
 item.style.top = `${y}px`;
 `field.appendChild(item);`
-console.log(`X: ${x}px, Y: ${y}px`);
 }
 }
 `function randomNumber(min, max)` {
 `return Math.random() * (max - min) + min;`
 }
-`initGame();`
 
 - In case of all codes, Please refer file named `basic-application/main.js`.
 
@@ -139,7 +160,7 @@ console.log(`X: ${x}px, Y: ${y}px`);
 
 #### 4-5. Timer
 
-- Common variables should be defined to make value easier to be changed efficiently, such as `GAME_DURATION_SEC`, `timer`. In addtion, function variables would use the common variables, such as `let RemaningTimeSec = GAME_DURATION_SEC;`. `setInterval()` and `clearInterval()` should be used to creat timer not only could keep running a task forever until end of conditions but also could stop interval when end of conditions within if loop. `Math.floor()` returns the largest integer value ignoring 0.xxx. `updateTimeText` function is callback function and use parameter named `time` as `RemainingTimeSec`. `--` of `updateTimeText(--RemainingTimeSec)` means minus(-) should be applied to parameter before operation of `updateTimeText` function. parameter of `updateTimeText` should be applied to `--RemainingTimeSec`, rather than `RemainingTimeSec` because `updateTimeText(RemainingTimeSec)` was already built above setInterval function.
+- Global variables should be defined to make value easier to be changed efficiently, such as `GAME_DURATION_SEC`, `timer`. In addtion, function local variable could use the global variables, such as `let RemaningTimeSec = GAME_DURATION_SEC;`. The one of reason why developer use timer as global variable is to stop timer easily when we needs. `setInterval()` and `clearInterval()` should be used to creat timer not only could keep running a task forever until end of configured time but also could stop interval when end of configured time within if loop. In case you want to exit the function when configured time immediately, use return within if loop. The function maybe operate one time after the time you want to stop if not use return within if loop. `Math.floor()` returns the largest integer value ignoring 0.xxx. `updateTimeText` function is callback function and use parameter named `time` as `RemainingTimeSec`. Call `updateTimeText(RemainingTimeSec)` outside `setInterval()` to display timer on gameTimer area. `--` of `updateTimeText(--RemainingTimeSec)` means minus(-) should be applied to timer. Call `updateTimeText(--RemainingTimeSec)` inside `setInterval()` and under if loop to discount timer. The timer should be finished if timer should be <= 0 by `clearInterval()`. However, The timer can not be finished abnormally and maybe to be continue to count if `updateTimeText(--RemainingTimeSec)` is upper if loop. So, The position of `updaterTimerText(--RemainingTimeSec)` is very important.
 
 - `const gameTimer` = `document.querySelector('.game__timer');`
   `const GAME_DURATION_SEC` = 10;
@@ -159,20 +180,24 @@ console.log(`X: ${x}px, Y: ${y}px`);
   }, `1000`);
   }
   `function updateTimeText`(`time`) {
-  `const Minute` = `Math.floor`(`time` / 60);
-  `const Sec` = `time` % 60;
+  `const Minutes` = `Math.floor`(`time` / 60);
+  `const Seconds` = `time` % 60;
   `gameTimer.innerText` = `${Minute} : ${Sec}`;
   }
 
 - In case of all codes, Please refer file named `basic-application/main.js`.
 
-#### 5. Resolution of failures
+### 5. Resolution of failures
+
+#### 5-1.
 
 - symptom: icons of not only carrot but also bug were positioned in rows. I did not use `item.style.position: 'absolute';`. In case of using `field.style.position: 'relative';`, icons would be positioned in rows even though I apply random function to coordinates because parent node of `field` named ` game__header` use `display: flex;`. Field element is also affected by `display: flex`.
 
 - <img src="./img/error2.png" width="700" height="400">
 
 - countermeasure: use `item.style.position: 'absolute';` to position item dependently itself without influence of parent element.
+
+#### 5-2.
 
 - symptom: type error message was displayed on console tab. However, icons were placed randomly and correctly on field element. It means normal operation but displayed type error message named `Cannot read properties of null (reading 'classList') at showStopBtn.` The meaning of error message is that classList of showStopBtn is not found.
 
@@ -208,6 +233,8 @@ console.log(`X: ${x}px, Y: ${y}px`);
 
   1. Toggle Btn is applied to addEventListener, such as `gameBtn.addEventListner('click', ()=> {if(started) {stopGame();} else {startGame();} started=!started`. In addition, `if(!started){return;}` and `const icon = document.querySelector('fa-stop');` is added within `showStartBtn()`.
   2. Check duplicated same function such as `stopGame()`.
+
+#### 5-3.
 
 - symptom: type error message was displayed on console tab. In addition, icons were not placed randomly when clicking stop button. It displayed type error message named `Failed to execute 'addEventListener' on 'EventTarget':2 arguments required, but only 1 present.` `EventListener` needs 2 arguments such as type and function. For example, `type` use as `'click'` and `function` use as `callback`.
   I mis-use `const icon = document.addEventListener('.fa-stop');` at `showStartBtn()`.
