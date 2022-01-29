@@ -293,7 +293,7 @@ item.style.top = `${y}px`;
     3. execute `replayGame()` with `startGame()`.
     4. execute `startGame()` with `startGameTimer()`even though correct sequence is `stopGame()`.
        As you can see, `startGameTimer()` is accumulated when number 4 step.
-    5. Please refer file named `basic-application/main_malfunction_timer.js`.
+    5. Please refer file named `basic-application/main_malfunction_timer1.js`.
 
   - in terms of variable named `stared` when using `started = !started;`
     1. started = `false` before executing `startGame()`.
@@ -316,6 +316,7 @@ item.style.top = `${y}px`;
     2. execute `stopGame()` with `stopGameTimer()`.
     3. execute `replayGame()` with `startGame()`.
     4. execute `stopGame()` with `stopGameTimer()`.
+    5. Please refer file named `basic-application/main_malfunction_timer2.js`.
 
   - In terms of variable named `started` defined within each of fucntions.
 
