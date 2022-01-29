@@ -1,6 +1,6 @@
 ### 1. Project name: Creating application of carrot-game
 
-### 2. Period : 4 day
+### 2. Period : 5 day
 
 ### 3. Concept of game
 
@@ -214,6 +214,12 @@ item.style.top = `${y}px`;
 
 - In case of all codes, Please refer file named `basic-application/main.js`.
 
+#### 4-6. Remove icon and load pop-up message with event delegation
+
+- `field.addEventListener('click', ()=> onFieldClick(event));` is same as `field.addEventListener('click', onFieldClick);`
+
+-
+
 ### 5. Resolution of failures
 
 #### 5-1.
@@ -278,7 +284,7 @@ item.style.top = `${y}px`;
 
 #### 5-4.
 
-- symptom: malfunction timer without error message. The reproduction sequence is as below
+- symptom: malfunction timer without error message and gameBtn do not changed from play to stop. The reproduction sequence is as below
 
   - in terms of functions named `startGame()`, `stopGame()`, `replayGame()`.
 
@@ -298,7 +304,9 @@ item.style.top = `${y}px`;
     6. started = `false` when executing `replayGame()`.
     7. started = `false` before executing `startGame()`.
     8. started = `false` when executing `startGame()`.
-       In case of started = false, `stopGame()` could not be executed correctly.
+    9. started = `false` before executing `startGame()`.
+    10. started = `false` when executing `startGame()`.
+        In case of started = false, `stopGame()` could not be executed correctly.
 
 - countermeasure: boolean type value named `stared` should be defined within each of functions.
 
@@ -318,4 +326,6 @@ item.style.top = `${y}px`;
     5. started = `false` before executing `replayGame()`.
     6. started = `false` when executing `replayGame()`.
     7. started = `false` before executing `startGame()`.
-    8. started = `true` when executing `startGame()`
+    8. started = `true` when executing `startGame()`.
+    9. started = `true` before executing `stopGame()`.
+    10. started = `false` when executing `stopGame()`.
