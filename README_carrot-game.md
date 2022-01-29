@@ -91,6 +91,8 @@
 
 #### 4-3. Javascript file
 
+- Please check javascript file matched HTML file before using live sever.
+
 - The reason why I use `'use strict'` is that javascript language is very flexible, so you can assign value of variable even though the variable is not defined. `'use strict'` helps assign value of variable after you define variable. Type error would be displayed on console if you do not define variable when use `'use strict'`.
 
 - In case you want to use images on HTML structure with undefined state not yet, use `createElement('img')` and `setAttribute()` on function. Tags and their attributes should be defined on the lowest function such as `for loop` to hide undefined value and use as local declaration. In addtion, function could have more than two arguments.
@@ -160,20 +162,45 @@ item.style.top = `${y}px`;
 
 #### 4-5. Timer
 
-- Global variables should be defined to make value easier to be changed efficiently, such as `GAME_DURATION_SEC`, `timer`. In addtion, function local variable could use the global variables, such as `let RemaningTimeSec = GAME_DURATION_SEC;`. The one of reason why developer use timer as global variable is to stop timer easily when we needs. `setInterval()` and `clearInterval()` should be used to creat timer not only could keep running a task forever until end of configured time but also could stop interval when end of configured time within if loop. In case you want to exit the function when configured time immediately, use return within if loop. The function maybe operate one time after the time you want to stop if not use return within if loop. `Math.floor()` returns the largest integer value ignoring 0.xxx. `updateTimeText` function is callback function and use parameter named `time` as `RemainingTimeSec`. Call `updateTimeText(RemainingTimeSec)` outside `setInterval()` to display timer on gameTimer area. `--` of `updateTimeText(--RemainingTimeSec)` means minus(-) should be applied to timer. Call `updateTimeText(--RemainingTimeSec)` inside `setInterval()` and under if loop to discount timer. The timer should be finished if timer should be <= 0 by `clearInterval()`. However, The timer can not be finished abnormally and maybe to be continue to count if `updateTimeText(--RemainingTimeSec)` is upper if loop. So, The position of `updaterTimerText(--RemainingTimeSec)` is very important.
+- Global variables should be defined to make value easier to be changed efficiently, such as `GAME_DURATION_SEC`, `timer`. In addtion, function local variable could use the global variables, such as `let RemaningTimeSec = GAME_DURATION_SEC;`. The one of reason why developer use timer as global variable is to stop timer easily when we needs. `setInterval()` and `clearInterval()` should be used to creat timer not only could keep running a task forever until end of configured time but also could stop interval when end of configured time within if loop. In case you want to exit the function when configured time immediately, use return within if loop. The function maybe operate one time after the time you want to stop if not use return within if loop. `Math.floor()` returns the largest integer value ignoring 0.xxx. `updateTimeText` function is callback function and use parameter named `time` as `RemainingTimeSec`. Call `updateTimeText(RemainingTimeSec)` outside `setInterval()` to display timer on gameTimer area. `--` of `updateTimeText(--RemainingTimeSec)` means minus(-) should be applied to timer. Call `updateTimeText(--RemainingTimeSec)` inside `setInterval()` and under if loop to discount timer. The timer should be finished if timer should be <= 0 by `clearInterval()`. In case of `clearInterval()`, I recommend use `clearInterval(timer)` because parameter should be needed when you use this within other function. However, The timer can not be finished abnormally and maybe to be continue to count if `updateTimeText(--RemainingTimeSec)` is upper if loop. So, The position of `updaterTimerText(--RemainingTimeSec)` is very important.
+
+- In case of boolean type named `started`, precondition is `false` before executing `startGame()`. However, value of started should be changed from `false` to `true` within `startGame()` when executing `startGame()`. This is also concept of toggle. Please do not forget that boolean type value should be changed when between before and when executing `startGame()` for operating correctly. I think `stared = !started` within `gameBtn.addEventListener()` means to control precondition before and after executing function named `startGame()` or `stopGame()`. In case of using same boolean type variable among more than 3 functions, the value of variable should be defined within function itself, rather than using `started = !started`. It would be possible to get malfunction timer because the timer is accumulated without stoping timer when it needed.
 
 - `const gameTimer` = `document.querySelector('.game__timer');`
+  `const PopupBtn = document.querySelector('.pop-up__refresh);`
   `const GAME_DURATION_SEC` = 10;
   `let timer` = undefined;
+  `gameBtn.addEventListener`('click', ()=> {
+  `if (started)` {
+  `stopGame();`
+  } `else` {
+  `startGame();`
+  }
+  })
+  `PopupBtn.addEventLisetner`('click', ()=> {
+  `replayGame();`
+  })
+  `function replayGame()` {
+  `started = false;`
+  `startGame();`
+  }
+  `function stopGame()` {
+  `started = false;`
+  `stopGameTimer();`
+  }
   `function startGame()` {
+  `started = true;`
   `startGameTimer();`
+  }
+  `function stopGameTimer()` {
+  `clearInterval(timer);`
   }
   `function startGameTimer`() {
   `let RemainingTimeSec` = `GAME_DURATION_SEC;`
   `updateTimeText`(RemainingTimeSec);
   `timer` = `setInterval`(() => {
   `if(RemainingTimeSec <= 0)` {
-  `clearInterval();`
+  `clearInterval(timer);`
   `return;`
   }
   `updateTimeText`(`--`RemainingTimeSec);
@@ -233,6 +260,8 @@ item.style.top = `${y}px`;
 
   1. Toggle Btn is applied to addEventListener, such as `gameBtn.addEventListner('click', ()=> {if(started) {stopGame();} else {startGame();} started=!started`. In addition, `if(!started){return;}` and `const icon = document.querySelector('fa-stop');` is added within `showStartBtn()`.
   2. Check duplicated same function such as `stopGame()`.
+  3. Add `stopGameTimer()` to prevent timer from discounting stanger value when clicking play button after clicking stop button. I think discounting trash value come from conflict between timer1 and timer2 because of miss to stop timer before `stopGame()`. The timer1 means discounting when clicking play button. The timer2 means discounting when clicking play button once again.
+  4. Please refer file named `basic-application/main_resolve.js`.
 
 #### 5-3.
 
@@ -246,3 +275,47 @@ item.style.top = `${y}px`;
 - <img src="./img/source1.png" width="700" height="400">
 
 - countermeasure: `const icon = document.addEventListener('.fa-stop');` should be changed to `const icon = document.querySelector('.fa-stop');`
+
+#### 5-4.
+
+- symptom: malfunction timer without error message. The reproduction sequence is as below
+
+  - in terms of functions named `startGame()`, `stopGame()`, `replayGame()`.
+
+    1. execute `startGame()` with `startGameTimer()`.
+    2. execute `stopGame()` with `stopGameTimer()`.
+    3. execute `replayGame()` with `startGame()`.
+    4. execute `startGame()` with `startGameTimer()`even though correct sequence is `stopGame()`.
+       As you can see, `startGameTimer()` is accumulated when number 4 step.
+    5. Please refer file named `basic-application/main_malfunction_timer.js`.
+
+  - in terms of variable named `stared` when using `started = !started;`
+    1. started = `false` before executing `startGame()`.
+    2. started = `false` when executing `startGame()`.
+    3. started = `true` before executing `stopGame()`.
+    4. started = `true` when executing `stopGame()`.
+    5. started = `false` before executing `replayGame()`.
+    6. started = `false` when executing `replayGame()`.
+    7. started = `false` before executing `startGame()`.
+    8. started = `false` when executing `startGame()`.
+       In case of started = false, `stopGame()` could not be executed correctly.
+
+- countermeasure: boolean type value named `stared` should be defined within each of functions.
+
+  - In terms of functions named `startGame()`, `stopGame()`, `replayGame()`.
+
+    1. execute `startGame()` with `startGameTimer()`.
+    2. execute `stopGame()` with `stopGameTimer()`.
+    3. execute `replayGame()` with `startGame()`.
+    4. execute `stopGame()` with `stopGameTimer()`.
+
+  - In terms of variable named `started` defined within each of fucntions.
+
+    1. started = `false` before executing `startGame()`.
+    2. started = `true` when executing `startGame()`.
+    3. started = `true` before executing `stopGame()`.
+    4. started = `false` when executing `stopGame()`.
+    5. started = `false` before executing `replayGame()`.
+    6. started = `false` when executing `replayGame()`.
+    7. started = `false` before executing `startGame()`.
+    8. started = `true` when executing `startGame()`

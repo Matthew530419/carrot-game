@@ -23,12 +23,11 @@ PopupBtn.addEventListener('click', ()=> {
 })
 
 function replayGame() {
-    started = false;
-    console.log(started);
-    console.log('replayGame');
     startGame();
     showGameBtn();
     hidePopupwithText();
+    console.log(started);
+    console.log('replay');
 }
 
 function showGameBtn() {
@@ -47,10 +46,10 @@ gameBtn.addEventListener('click', ()=> {
     } else {
         startGame();
     } 
+    started = !started;
 })
 
 function stopGame() {
-    started = false;
     console.log(started);
     console.log('stopGame');
     hideGameBtn();
@@ -72,7 +71,6 @@ function stopGameTimer() {
 }
 
 function startGame() {
-    started = true;
     console.log(started);
     console.log('startGame');
     field.innerHTML = ``;
@@ -84,7 +82,7 @@ function startGame() {
 
 function showStopBtn() {
     const icon = document.querySelector('.fas');
-    if(started){
+    if(!started){
         icon.classList.add('fa-stop');
         icon.classList.remove('fa-play');    
     } else {
@@ -93,7 +91,7 @@ function showStopBtn() {
 }
 
 function showTimerAndScore() {
-    if(started){
+    if(!started){
     gameTimer.style.visibility = 'visible';
     gmaeScore.style.visibility = 'visible';
     }
