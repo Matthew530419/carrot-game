@@ -305,6 +305,13 @@
 
 - In case of all codes, Please refer file named `basic-application/main2.js`.
 
+#### 4-7. Output
+
+- <img src="./img/basic-application/output2.png" width="700" height="400">
+  <img src="./img/basic-application/output3.png" width="700" height="400">
+  <img src="./img/basic-application/output4.png" width="700" height="400">
+  <img src="./img/basic-application/output5.png" width="700" height="400">
+
 ### 5. Resolution of failures
 
 #### 5-1.
