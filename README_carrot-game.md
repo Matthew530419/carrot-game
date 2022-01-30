@@ -1,6 +1,6 @@
 ### 1. Project name: Creating application of carrot-game
 
-### 2. Period : 5 day
+### 2. Period : 1 week
 
 ### 3. Concept of game
 
@@ -99,60 +99,102 @@
 
 - In case assigned reference like `item.style.position` should be refered and the value is `'absolute'`, datas of `field.appendchild(item);` should be positioned on default coordinates like direction of northwest. In case of `appendChild`, `field` of `field.appendchild(item)` is parent node of `item`. The parent node has default value of position named `static` if not any other configured position. So, the parent node should be changed to `relative` to position icons on the area of `field`. Please consider image size when declaring variables related with coordinate. It is possible for image to be outside the area of `field` if not considered.
 
-- In case you type `document.querySelector('.className')`, do not forget `.`of`(.className)`. Global variable is useful to use value as counter, size, and so on. You can only change value of global variable when this value used on many kind of functions.
+- In case you type `document.querySelector('.className')`, do not forget `.`of`(.className)`. Global variable is useful to use value as counter, size, and so on. You can only change value of global variable when this value used on many kind of functions. In addition, use `document.querySelecotr('.fas')` instead of `('.fa-play') or ('fa.stop')` to prevent type error `'Cannot read properties of null (reading 'classList')` when using function named `showStopBtn()`.
 
-- Toggle switch is very useful to play and restore application when clicking button. If loop is also very useful. In addition, do not hesitate to use a variety of functions to get correct outputs and operate normally. The most important thing is to operate this application normally. And then, refactorying could be possible to optimize memory. Please be careful regarding duplicated function on there when use many kinds of functions. In case you want to initialize some of area, use `element.innerHTML = template literal * 2`.
+- Toggle switch is very useful to play and restore application when clicking button. If loop is also very useful. In addition, do not hesitate to use a variety of functions to get correct outputs and operate normally. The most important thing is to operate this application normally. And then, refactorying could be possible to optimize memory. Please be careful regarding duplicated function on there when use many kinds of functions. In case you want to initialize some of area, use `element.innerHTML = template literal * 2`. In case of using more than 3 functions related with variable named `stared`, `started` should be defined within each of functions, rather than using `started = !started;`.
 
--`'use strict';`
-`const field` = document.querySelector(`'.game__field'`);
-`const fieldRect` = `field.getBoundingClientRect();`
-`const gameBtn` = document.querySelector(`'.game__button'`);
-`const Carrot_Size` = 80;
-`const Carrot_Count` = 10;
-`const Bug_Count` = 10;
-`let started = false;`
-`gameBtn.addEventListener`('click', ()=> {
-`if (started)` {
-`stopGame();`
-} `else` {
-`startGame();`
-}
-`started = !started;`
-})
-`function stopGame()` {
-` field.innerHTML= ``; `
-`showStartBtn();`
-`hideTimerandScore();`
-}
-`function startGame()` {
-`showStopBtn();`
-`showTimerAndScore();`
-`initGame();`
-}
-`function initGame()` {
-`addItem('carrot', Carrot_Count, 'img/carrot.png');`
-`addItem('bug', Bug_Count, 'img/bug.png');`
-}
-`function addItem(className, count, imgPath)` {
-const x1 = 0
-const y1 = 0;
-`const x2 = fieldRect.width - Carrot_Size;`
-`const y2 = fieldRect.height - Carrot_Size;`
-`for(let i=0; i < count; i++)` {
-`const item = document.createElement('img');`
-`item.setAttribute('class', className);`
-`item.setAttribute('src', imgPath);`
-`item.style.position = 'absolute';`
-`const x = randomNumber(x1, x2);`
-`const y = randomNumber(y1, y2);`
-item.style.left = `${x}px`;
-item.style.top = `${y}px`;
-`field.appendChild(item);`
-}
-}
-`function randomNumber(min, max)` {
-`return Math.random() * (max - min) + min;`
-}
+- -`'use strict';`
+  `const field` = document.querySelector(`'.game__field'`);
+  `const fieldRect` = `field.getBoundingClientRect();`
+  `const gameBtn` = document.querySelector(`'.game__button'`);
+  `const Popup` = document.querySelector(`'.pop-up'`);
+  `const PopupText` = document.querySelector(`'.pop-up__message'`);
+  `const PopupBtn` = document.querySelector(`'.pop-up__refresh'`);
+  `const Carrot_Size` = 80;
+  `const Carrot_Count` = 10;
+  `const Bug_Count` = 10;
+  `let started = false;`
+  `gameBtn.addEventListener`('click', ()=> {
+  `if (started)` {
+  `stopGame();`
+  } `else` {
+  `startGame();`
+  }
+  })
+  `PopupBtn.addEventListener`('click', ()=> {
+  `replayGame();`
+  })
+  `function replayGame()` {
+  `started = false;`
+  `startGame();`
+  `showGameBtn();`
+  `hidePopupwithText();`
+  }
+  `function startGame()` {
+  `started = true;`
+  `showStopBtn();`
+  `showTimerAndScore();`
+  `initGame();`
+  }
+  `function stopGame()` {
+  `started = false;`
+  ` field.innerHTML= ``; `
+  `showStartBtn();`
+  `hideTimerandScore();`
+  `showPopupwithText('Replay?');`
+  }
+  `function showGameBtn()` {
+  `gameBtn.style.visibility = 'visible';`
+  }
+  `function hideGameBtn()` {
+  `gameBtn.style.visibility = 'hidden';`
+  }
+  `function showPopupwithText(text)` {
+  `Popup.classList.remove('pop-up--hide');`
+  `PopupText.innerText = text;`
+  }
+  `function hidePopupwithText()` {
+  `Popup.classList.add('pop-up--hide');`
+  }
+  `function showStopBtn()` {
+  `const icon` = document.querySelector(`'.fas'`);
+  `if(started)`{
+  `icon.classList.add('fa-stop');`
+  `icon.classList.remove('fa-play');`  
+   } `else` {
+  `return;`
+  }
+  }
+  `function showTimerAndScore()` {
+  `if(started)`{
+  `gameTimer.style.visibility = 'visible';`
+  `gameScore.style.visibility = 'visible';`
+  }
+  }
+  `function initGame()` {
+  `addItem('carrot', Carrot_Count, 'img/carrot.png');`
+  `addItem('bug', Bug_Count, 'img/bug.png');`
+  }
+  `function addItem(className, count, imgPath)` {
+  const x1 = 0
+  const y1 = 0;
+  `const x2 = fieldRect.width - Carrot_Size;`
+  `const y2 = fieldRect.height - Carrot_Size;`
+  `for(let i=0; i < count; i++)` {
+  `const item = document.createElement('img');`
+  `item.setAttribute('class', className);`
+  `item.setAttribute('src', imgPath);`
+  `item.style.position = 'absolute';`
+  `const x = randomNumber(x1, x2);`
+  `const y = randomNumber(y1, y2);`
+  item.style.left = `${x}px`;
+  item.style.top = `${y}px`;
+  `field.appendChild(item);`
+  }
+  }
+  `function randomNumber(min, max)` {
+  `return Math.random() * (max - min) + min;`
+  }
 
 - In case of all codes, Please refer file named `basic-application/main.js`.
 
@@ -164,7 +206,7 @@ item.style.top = `${y}px`;
 
 - Global variables should be defined to make value easier to be changed efficiently, such as `GAME_DURATION_SEC`, `timer`. In addtion, function local variable could use the global variables, such as `let RemaningTimeSec = GAME_DURATION_SEC;`. The one of reason why developer use timer as global variable is to stop timer easily when we needs. `setInterval()` and `clearInterval()` should be used to creat timer not only could keep running a task forever until end of configured time but also could stop interval when end of configured time within if loop. In case you want to exit the function when configured time immediately, use return within if loop. The function maybe operate one time after the time you want to stop if not use return within if loop. `Math.floor()` returns the largest integer value ignoring 0.xxx. `updateTimeText` function is callback function and use parameter named `time` as `RemainingTimeSec`. Call `updateTimeText(RemainingTimeSec)` outside `setInterval()` to display timer on gameTimer area. `--` of `updateTimeText(--RemainingTimeSec)` means minus(-) should be applied to timer. Call `updateTimeText(--RemainingTimeSec)` inside `setInterval()` and under if loop to discount timer. The timer should be finished if timer should be <= 0 by `clearInterval()`. In case of `clearInterval()`, I recommend use `clearInterval(timer)` because parameter should be needed when you use this within other function. However, The timer can not be finished abnormally and maybe to be continue to count if `updateTimeText(--RemainingTimeSec)` is upper if loop. So, The position of `updaterTimerText(--RemainingTimeSec)` is very important.
 
-- In case of boolean type named `started`, precondition is `false` before executing `startGame()`. However, value of started should be changed from `false` to `true` within `startGame()` when executing `startGame()`. This is also concept of toggle. Please do not forget that boolean type value should be changed when between before and when executing `startGame()` for operating correctly. I think `stared = !started` within `gameBtn.addEventListener()` means to control precondition before and after executing function named `startGame()` or `stopGame()`. In case of using same boolean type variable among more than 3 functions, the value of variable should be defined within function itself, rather than using `started = !started`. It would be possible to get malfunction timer because the timer is accumulated without stoping timer when it needed.
+- In case of boolean type named `started`, precondition is `false` before executing `startGame()`. However, value of started should be changed from `false` to `true` within `startGame()` when executing `startGame()`. This is also concept of toggle. Please do not forget that boolean type value should be changed when between before and when executing `startGame()` for operating correctly. I think `stared = !started` within `gameBtn.addEventListener()` means to control precondition before and after executing function named `startGame()` or `stopGame()`. In case of using same boolean type variable among more than 3 functions, the value of variable should be defined within function itself, rather than using `started = !started`. It would be possible to get malfunction timer because the timer is accumulated without stoping timer when it needed. In addition, please consider to stop timer when carrot icons removed completely. So, use `finishGame(Carrot_Count === score);` within `if(RemainingTimeSec <= 0)`. `finishGame(Carrot_Count === score);` means to return true if carrot icon removed completely when timer is 0, or to return false else if carrot icon do not removed completely when timer is 0.
 
 - `const gameTimer` = `document.querySelector('.game__timer');`
   `const PopupBtn = document.querySelector('.pop-up__refresh);`
@@ -200,6 +242,7 @@ item.style.top = `${y}px`;
   `updateTimeText`(RemainingTimeSec);
   `timer` = `setInterval`(() => {
   `if(RemainingTimeSec <= 0)` {
+  `finishGame(Carrot_Count === score);`
   `clearInterval(timer);`
   `return;`
   }
@@ -212,13 +255,55 @@ item.style.top = `${y}px`;
   `gameTimer.innerText` = `${Minute} : ${Sec}`;
   }
 
-- In case of all codes, Please refer file named `basic-application/main.js`.
+- In case of all codes, Please refer file named `basic-application/main2.js`.
 
 #### 4-6. Remove icon and load pop-up message with event delegation
 
-- `field.addEventListener('click', ()=> onFieldClick(event));` is same as `field.addEventListener('click', onFieldClick);`
+- To operate when clicking on only field area, use `field.addEventListener`. `field.addEventListener('click', ()=> onFieldClick(event));` is same as `field.addEventListener('click', onFieldClick);`. In case you want to use click event when clicking play button, use `if(!started){return;}`. In case of API named `target.matches()`, indicate whether or not target is matched to CSS selector. return value is true or false according to boolean type. So, `target.matches()` suits `if loop`. The `if loop` operates function with true value.
 
--
+- The reason why `started = false;` is used within functions named between `replayGame()` and `finishGame()` is that `started value` should be `false` before executing `startGame()`. The reason why `finishGame()` needs is that game should be finished when not only clicking bug icon but also timer is 0. `finishGamed()` is also needed `stopGameTimer()` because timer should be stopped when `finishGame()`. The rule of `ReplayGame()` is to replay game when clicking pop-up button. In case of `ReplayGame()`, it makes difficult to combine functions because it is impossible to start and finish at the same time. So, `finishGame()` should be added. In case you want to creat text on pop-up message, use `showPopupwithText()` same as within `stopGame()`. Please reminder score should be initialized when clicking replay button. If you use `initScore()` within `finishGame()`, score should be updated when displaying pop-up message. So, use `initScore()` within `replayGame()`.
+
+- `PopupBtn.addEventListener`('click', ()=> {
+  `replayGame();`
+  })
+  `field.addEventListener`('click', `onFieldClick`);
+  `function onFieldClick(event)` {
+  `if(!started)` {
+  `return;`
+  }
+  `const target = event.target;`
+  `if(target.matches('.carrot'))` {
+  `target.remove();`
+  `score++;`
+  `updateScore();`
+  `if(Carrot_Count === score)` {
+  `finishGame(true);`
+  }
+  } `else if(target.matches('.bug'))` {
+  `finishGame(false);`
+  }
+  }
+  `function replayGame()` {
+  `started = false;`
+  `initScore();`
+  `updateScore();`
+  }
+  `function finishGame(win)` {
+  `started = false;`
+  `stopGameTimer();`
+  `hideGameBtn();`
+  `showPopupwithText(win? 'You Won!' : 'You Lost!');`
+  }
+  `function updateScore()` {
+  `gameScore.innerText = Carrot_Count - score;`
+  }
+  `function initScore()` {
+  `if (finishGame)` {
+  `score = 0;`
+  }
+  }
+
+- In case of all codes, Please refer file named `basic-application/main2.js`.
 
 ### 5. Resolution of failures
 
