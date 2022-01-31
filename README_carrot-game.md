@@ -305,12 +305,43 @@
 
 - In case of all codes, Please refer file named `basic-application/main2.js`.
 
-#### 4-7. Output
+#### 4-7. Add sound
 
-- <img src="./img/basic-application/output2.png" width="700" height="400">
-  <img src="./img/basic-application/output3.png" width="700" height="400">
-  <img src="./img/basic-application/output4.png" width="700" height="400">
-  <img src="./img/basic-application/output5.png" width="700" height="400">
+- 5 type sounds would be declared. In case of background sound when executing `startGame()`, use `bgSound`. In case of removed carrot icon completely on window tab and score is 0, use `winSound`. In case of clicking carrot icon, use `carrotSound`. In case of clicking bug icon, use `bugSound`. In case of clicking stop button, use `alertSound`.
+- To add or remove sound according to each of events, references of audio should be defined on javascript at first, and then, use not only `playSound()` but also `pauseSound()` with callback function to play each of sounds. In case the background sound should be initialized per play, use `element.currentTime=0;` within `playSound()`. It would be possible for currentTime to be changed when you want to time with setted value.
+
+- `const carrotSound` = `new Audio('./sound/carrot_pull.mp3');`
+  `const bugSound` = `new Audio('./sound/bug_pull.mp3');`
+  `const bgSound` = `new Audio('./sound/bg.mp3');`
+  `const winSound` = `new Audio('./sound/game_win.mp3');`
+  `const alertSound` = `new Audio('./sound/alert.wav');`
+  `function playSound(sound)` {
+  `sound.play();`
+  `sound.currentTime = 0;`
+  }
+  `function pauseSound(sound)` {
+  `sound.pause();`
+  }
+  `function finishGame(win)` {
+  `if(Carrot_Count === score)` {
+  `playSound(winSound);`
+  `pauseSound(bgSound);`
+  } `else` {
+  `playSound(bugSound);`
+  `pauseSound(bgSound);`
+  }
+  }
+  `function startGame()` {
+  `playSound(bgSound);`
+  }
+  `function stopGame()` {
+  `pauseSound(bgSound);`
+  `playSound(alertSound);`
+  }
+
+#### 4-8. Output
+
+- <img src="./img/basic-application/carrot-game.gif" width="700" height="400">
 
 ### 5. Resolution of failures
 
