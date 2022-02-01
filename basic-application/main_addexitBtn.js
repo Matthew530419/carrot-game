@@ -23,6 +23,10 @@ let started = false;
 let timer = undefined;
 let score = 0;
 
+gameBtn.addEventListener('contextmenu', ()=> {
+    exitGame();
+})
+
 gameBtn.addEventListener('click', ()=> {
     console.log(started);
     console.log('gameBtn');
@@ -67,6 +71,16 @@ function playSound(sound) {
 
 function pauseSound(sound) {
     sound.pause();
+}
+
+function exitGame() {
+    started = false;
+    field.innerHTML = ``;
+    hideTimerAndScore();
+    stopGameTimer();
+    showStopBtn();
+    pauseSound(bgSound);
+    
 }
 
 function finishGame(win) {
@@ -150,7 +164,16 @@ function showStopBtn() {
         icon.classList.add('fa-stop');
         icon.classList.remove('fa-play');    
     } else {
-        return;
+        icon.classList.add('fa-play');
+        icon.classList.remove('fa-stop');
+    }
+}
+
+
+function hideTimerAndScore() {
+    if(!started){
+    gameTimer.style.visibility = 'hidden';
+    gameScore.style.visibility = 'hidden';
     }
 }
 

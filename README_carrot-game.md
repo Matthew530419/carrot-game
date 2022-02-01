@@ -99,7 +99,7 @@
 
 - In case assigned reference like `item.style.position` should be refered and the value is `'absolute'`, datas of `field.appendchild(item);` should be positioned on default coordinates like direction of northwest. In case of `appendChild`, `field` of `field.appendchild(item)` is parent node of `item`. The parent node has default value of position named `static` if not any other configured position. So, the parent node should be changed to `relative` to position icons on the area of `field`. Please consider image size when declaring variables related with coordinate. It is possible for image to be outside the area of `field` if not considered.
 
-- In case you type `document.querySelector('.className')`, do not forget `.`of`(.className)`. Global variable is useful to use value as counter, size, and so on. You can only change value of global variable when this value used on many kind of functions. In addition, use `document.querySelecotr('.fas')` instead of `('.fa-play') or ('fa.stop')` to prevent type error `'Cannot read properties of null (reading 'classList')` when using function named `showStopBtn()`.
+- In case you type `document.querySelector('.className')`, do not forget `.`of`(.className)`. Global variable is useful to use value as counter, size, and so on. You can only change value of global variable when this value used on many kind of functions. In addition, use `document.querySelecotr('.fas')` instead of `('.fa-play') or ('fa.stop')` to prevent type error `'Cannot read properties of null (reading 'classList')` when using function named `showStopBtn()`. It is event delegation. The concept of event delegation is to use parent node named `'fas'` which could refer the reference of `'fa-play'` and `' fa-stop'` on javascript.
 
 - Toggle switch is very useful to play and restore application when clicking button. If loop is also very useful. In addition, do not hesitate to use a variety of functions to get correct outputs and operate normally. The most important thing is to operate this application normally. And then, refactorying could be possible to optimize memory. Please be careful regarding duplicated function on there when use many kinds of functions. In case you want to initialize some of area, use `element.innerHTML = template literal * 2`. In case of using more than 3 functions related with variable named `stared`, `started` should be defined within each of functions, rather than using `started = !started;`.
 
@@ -310,6 +310,8 @@
 - 5 type sounds would be declared. In case of background sound when executing `startGame()`, use `bgSound`. In case of removed carrot icon completely on window tab and score is 0, use `winSound`. In case of clicking carrot icon, use `carrotSound`. In case of clicking bug icon, use `bugSound`. In case of clicking stop button, use `alertSound`.
 - To add or remove sound according to each of events, references of audio should be defined on javascript at first, and then, use not only `playSound()` but also `pauseSound()` with callback function to play each of sounds. In case the background sound should be initialized per play, use `element.currentTime=0;` within `playSound()`. It would be possible for currentTime to be changed when you want to time with setted value.
 
+- In case of conditional operator named `else{}` within `finishGame()`, `else{pauseSound(bgSound);}` includes `pauseSound(bgSound);` within `stopGameTimer()`. I recommend you to use `stopGameTimer(){pauseSound(bgSound);}` to help other developer understand my intent definitely. If you use `else{pauseSound(bgSound);}`, Please annotate for better understanding.
+
 - `const carrotSound` = `new Audio('./sound/carrot_pull.mp3');`
   `const bugSound` = `new Audio('./sound/bug_pull.mp3');`
   `const bgSound` = `new Audio('./sound/bg.mp3');`
@@ -339,9 +341,39 @@
   `playSound(alertSound);`
   }
 
+- In case of all codes, Please refer file named `basic-application/main_addsound.js`.
+
+#### 4-9. Add exitBtn
+
+- In case we use `element.addEventListener('click', xxx);`, we can not use `element.addEventListener('dblclick', xxxx);`. The only one case of operating with double-clicking is condition before clicking button with `element.addEventLister('click', xxx);`. In addition, `return false;` should be needed to ignore one click when double-clicking. For example, `element.addEventListener('dblclick', ()=>{return false;});`. So, I use event as `'contextmenu'` instead of `'dblclick'`. `'contextmenu'` could be trigger by clicking the right mouse button.
+
+- `hideTimerAndScore()` is added because timer and score should disappear when `exitGame();`. I use `if(!started){}` because `exitGame()` has `started = false;`. In case of `showTimerAndScore()`, I use `if(started){}` because `startGame()` has `started = true;`.
+
+- `gameBtn.addEventListener('contextmenu'`, ()=> {
+  `exitGame();`
+  })
+  `function exitGame()` {
+  `started = false;`
+  ` field.innerHTML = ``; `
+  `hideTimerAndScore();`
+  `stopGameTimer();`
+  `showStopBtn();`
+  `pauseSound(bgSound);`
+
+}
+`function hideTimerAndScore()` {
+`if(!started)`{
+`gameTimer.style.visibility = 'hidden';`
+`gameScore.style.visibility = 'hidden';`
+}
+}
+
+- In case of all codes, Please refer file named `basic-application/main_addexitBtn.js`.
+
 #### 4-8. Output
 
 - <img src="./img/basic-application/carrot-game.gif" width="700" height="400">
+  <img src="./img/basic-application/addexitBtn.gif" width="700" height="400">
 
 ### 5. Resolution of failures
 
