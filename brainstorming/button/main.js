@@ -1,12 +1,21 @@
 const play = document.querySelector('.play');
-const pause = document.querySelector('#pause');
 
-document.querySelector('#pause').style.display = 'none';
+let started = false;
 
 play.addEventListener('click', () => {
-    play.innerHTML = `<i class="fas fa-pause"></i>`;
+    showPauseBtn();
+    started = !started;
 })
 
-pause.addEventListener('click', () => {
-    pause.innerHTML = `<i class="fas fa-pause"></i>`;
-})
+function showPauseBtn() {
+    const icon = document.querySelector('.fas');
+    if(started){
+        icon.classList.add('fa-pause');
+        icon.classList.remove('fa-play');
+    } else {
+        icon.classList.add('fa-play');
+        icon.classList.remove('fa-pause');
+    }
+    
+    
+}

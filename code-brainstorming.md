@@ -10,13 +10,13 @@
 
 - <img src="./img/brainstroming/output1.png" width="700" height="400">
 
-### 1. Timer
+### 2. Timer
 
 - `div` box could be needed to display timer and id is also assigned on tag of box to operate uniqe box regardless of other boxs on javascript. Use mutable variable with keyword named `let` because counter value should be changed per 1s. Please refer image for good understanding of values per type as below.
 
 - <img src="./img/brainstroming/types.png" width="700" height="400">
 
-#### 1-1. Javascript file
+#### 2-1. Javascript file
 
 - In case of `setInterval()`, use with `clearInterval()` together to operate something per interval. Mutable variable should be needed and the mutable variable should be used as parameter of `clearInterval()` to operate correctly. `const timer = document.querySelector('#timer');` is same as `const timer = document.getElementById('timer);`. Javascript could generally recognize time per ms.
 
@@ -33,15 +33,15 @@
 
 - In case of all codes, Please refer file named `./brainstorming/timer/main.js`.
 
-#### 1-2. Output
+#### 2-2. Output
 
-- <img src="./img/brainstroming/output2.png" width="300" height="300">
+- <img src="./img/brainstroming/output2.gif" width="300" height="300">
 
-### 2. Start and Pause buttons
+### 3. Start and Pause buttons
 
 - Start symbol button should be changed to pause symbol button when clicking the start symbol button. In addition, pause symbol button should be hidden at first because start symbol button is only appear when completed to load. In case of without pause symbol button, start symbol button and pause symbol button would be added on documentElement of broswer together.
 
-#### 2-1. HTML file
+#### 3-1. HTML file
 
 - `<body>`
   `<ul class="items">`
@@ -59,7 +59,7 @@
 
 - In case of all codes, Please refer file named `./brainstorming/button/button.html`.
 
-#### 2-2. Javascript file
+#### 3-2. Javascript file
 
 - `const play = document.querySelector('.play');`
   `const pause = document.querySelector('#pause');`
@@ -73,10 +73,9 @@
 
 - In case of all codes, Please refer file named `./brainstorming/button/main.js`.
 
-#### 2-3. Output
+#### 3-3. Output
 
-- <img src="./img/brainstroming/output3.png" width="300" height="300">
-  <img src="./img/brainstroming/output4.png" width="300" height="300">
+- <img src="./img/brainstroming/output3.gif" width="300" height="300">
 
 ### 3. Coordinates with buttons between named started and stopped
 
@@ -99,13 +98,21 @@
 
 - In case of tag with id, should be used with `#` such as `#started`. In case of `.line.horizontal` of HTML, `.line` and `.horizontal` are used respectively on CSS. Common properties would be written down on tag named `.line` because `line` is parent node of `horizontal`.
 
+- In case of buttons named `#started` and `#stopped`, should be defined `position: absolute;` to operate `removeEventListener` correctly. It would be possible for browser not to find position of button named `stopped` exactly if not.
+
 - `#started` {
+  `position`: absolute;
   `background-color`: white;
   `color`: black;
+  `right`: 200px;
+  `font-size`: 35px;
   }
   `#stopped` {
+  `position`: absolute;
   `background-color`: white;
   `color`: black;
+  `right`: 20px;
+  `font-size`: 35px;
   }
   `body` {
   `background-color`: black;
@@ -114,17 +121,17 @@
   `background-color: white;`
   }
   `.horizontal` {
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  top: 50%;
+  `position`: absolute;
+  `width`: 100%;
+  `height`: 1px;
+  `top`: 50%;
   }
 
 - In case of all codes, Please refer file named `./brainstorming/start-stop/style.css`.
 
 #### 3-2. Javascript file
 
-- Function named `operation` should be used for removeEventListener is applied to as `stopped.addEventListener('click', () => {document.removeEventListener('mousemove', operation);})`. `operation` is correct and `operation()` is not correct because syntax of `removeEventListener` recognize `operation`. The function named `operation` should use parameter as event because this function will operater when event.
+- Function named `operation` within `removeEventListener` should be used as `stopped.addEventListener('click', () => {document.removeEventListener('mousemove', operation);})`. `operation` is correct and `operation()` is not correct because syntax of not only `removeEventListener` but also `addEventListener` recognize `operation`. `removeEventListener('mousemove', operation);})` is same as `removeEventListener('mousemove', (event) => {operation(event);})`. The function named `operation` should use parameter as event because this function will operater when event.
 
 - `const started = document.querySelector('#started');`
   `const stopped = document.querySelector('#stopped');`
@@ -164,13 +171,7 @@
 
 #### 3-3. Output
 
-- Operating after clicking started button.
-
-  <img src="./img/brainstroming/output5.png" width="300" height="300">
-
-- Stopped when clicking stopped button
-
-  <img src="./img/brainstroming/output6.png" width="300" height="300">
+- <img src="./img/brainstroming/output4.gif" width="300" height="300">
 
 ### 4. Coordinates with button and random function
 
@@ -182,8 +183,8 @@
 
 - `start.addEventListener('click', Random);`
   `function Random (event)` {
-  const itemRow = document.createElement('div');
-  itemRow.setAttribute('class', 'item\_\_row');
+  `const itemRow` = document.createElement(`'div'`);
+  itemRow.setAttribute('class', `'item__row'`);
   itemRow.innerHTML= `template literal`
   `<div class="line horizontal"></div>`
   `<div class="line verticle"></div>`
@@ -210,12 +211,18 @@
 
 #### 4-2. Output
 
-- <img src="./img/brainstroming/output7.png" width="300" height="300">
+- <img src="./img/brainstroming/output5.gif" width="300" height="300">
 
 ### 5. Resolution of failures
 
-- symptom: `horizontal.style.top = `${Y}px`;` is operating continuously when clicking stop button. I think `removeEventListener` can not recognized function named `operation` because function do not have references of tags itself within the function when `removeEventListener` is called. So, `removeEventListener` is not be operated when clicking stopped button.
+- symptom: `mousemove` is operating continuously when clicking stop button. I think `removeEventListener` can not recognize function named `operation` because function do not have references of tags itself within the function when `removeEventListener` is called. So, `removeEventListener` is not be operated when clicking stopped button.
 
-- countermeasure : references should be applied to within function. Use `node.innerHTML` or `const horizontal = document.createElement('tag type');`, `horizontal.setAttribute('class', 'horizontal');`. `node.innerHTML` would be more convenient than the other. In addition, position of buttons should be also defined to operate correctly.
+- countermeasure : references should be applied to within function. Use `node.innerHTML` or `const itemRow = document.createElement('div');`, `itemRow.setAttribute('class', 'item__row');`. `itemRow.innerHTML` would be more convenient than the other. In addition, position of buttons should be also defined to operate correctly.
 
 - Please refer ./brainstorming/start-stop/main2.js
+
+- symptom: `mousemove` is operating continuously when clicking stop button. In case you use `display: flex;`, `removeEventListener` can not also recognize position of button named `stopped`.
+
+- <img src="./img/brainstroming/error2.gif" width="300" height="300">
+
+- countermeasure: I recommend you use `position: absolute;`, rather than `display: flex;` if you use `removeEventListener` with id.

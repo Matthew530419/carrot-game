@@ -13,6 +13,8 @@ stopped.addEventListener('click', () => {
     document.removeEventListener('mousemove', operation); 
 });
 
+
+
 function operation (event) {
     const itemRow = document.createElement('div');
     itemRow.setAttribute('class', 'item__row');
@@ -23,7 +25,6 @@ function operation (event) {
         <span class="tag"></span>
         <button id="started">started</button>
         <button id="stopped">stopped</button>
-        </div>
     `;
     let X = event.clientX;
     let Y = event.clientY;

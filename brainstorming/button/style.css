@@ -2,10 +2,17 @@ body {
   background-color: lightgrey;
 }
 
-.play {
-  font-size: 30px;
+.item__row {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
 }
 
-#timer {
+button {
   font-size: 30px;
+  background-color: blanchedalmond;
+  width: 60px;
+  height: 60px;
+  border: 4px solid black;
 }
