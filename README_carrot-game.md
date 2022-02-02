@@ -6,7 +6,8 @@
 
 - Please consider architecture of application in advance, at least on concept stage.
 
-- The game should be played with timer that could discount 10s when clicking start symbol button. The start symbol button should be simultaneously changed to pause symbol button. It would be better to put tags named `button` and `span`s in section named `header`. `div` is also good. The reason why use `section` is that I want to divide sections definitely no matter who looks at it.
+- The game should be played with timer that could discount 10s when clicking start symbol button. The start symbol button s8 xz bn 1
+  ㅍ hould be simultaneously changed to pause symbol button. It would be better to put tags named `button` and `span`s in section named `header`. `div` is also good. The reason why use `section` is that I want to divide sections definitely no matter who looks at it.
 
 - Images of carrots and bugs should be positioned randomly on the section named field whenever clicking not only start button but also pause button. The position of images could be accumulated at the same place together.
 
@@ -368,12 +369,66 @@
 }
 }
 
-- In case of all codes, Please refer file named `basic-application/main_addexitBtn.js`.
+- This is output using `addEventListener('contextmenu', xx)`.
+  <img src="./img/basic-application/addexitBtn.gif" width="700" height="400">
+
+- In case of all codes, Please refer file named `basic-application/main_addexitBtn1.js`.
+
+- I changed from clicking the right mouse button to click added exit button.
+
+- In case of HTML file, div tag with class named `button__row` and button tag with class named `pop-up__exit` as below.
+
+- `<section class="pop-up pop-up--hide">`
+  `<div class="button__row">`
+  `<button class="pop-up__refresh">`
+  `<i class="fas fa-redo"></i>`
+  `</button>`
+  `<button class="pop-up__exit">`
+  `<i class="fas fa-times"></i>`
+  `</button>`
+  `</div>`
+  `<span class="pop-up__message">hello</span>`
+  `</section>`
+
+- In case of CSS file, class CSS selector named `.button__row` should be defined `space-evenly` to keep same empty space between the buttons. `.pop-up__exit` is decorated as same as `.pop-up__refresh`.
+
+- `.button__row` {
+  `display: flex;`
+  `justify-content: space-evenly;`
+  }
+  `.pop-up__exit` {
+  `width: 60px;`
+  `height: 60px;`
+  `background-color: wheat;`
+  `font-size: 30px;`
+  `border: 2px solid black;`
+  `border-radius: 50%;`
+  }
+
+- In case of javascript file, use variable named exitBtn to refer the reference of exitBtn button, and then, `exitGame()` has most of functions as same as `replayGame()` or `finishGame()`. There are only two of different things. The one is to use `showStopBtn()`. `showStopBtn()` could change button symbol from `stop` to `play` if `stared = false;`. The other is to use ` field.innerHTML = ``; ` because we need initial screen without `startGame()`.
+
+- `const exitBtn` = document.querySelector(`'.pop-up__exit'`);
+  `exitBtn.addEventListener('click'`, ()=> {
+  `exitGame();`
+  })
+  `function exitGame`() {
+  `started = false;`
+  ` field.innerHTML = ``; `
+  `initScore();`
+  `updateScore();`
+  `hideTimerAndScore();`
+  `stopGameTimer();`
+  `showStopBtn();`
+  `showGameBtn();`
+  `pauseSound(bgSound);`
+  `hidePopupwithText();`
+  }
+
+- In case of all codes, Please refer file named `basic-application/main_addexitBtn2.js`.
 
 #### 4-8. Output
 
 - <img src="./img/basic-application/carrot-game.gif" width="700" height="400">
-  <img src="./img/basic-application/addexitBtn.gif" width="700" height="400">
 
 ### 5. Resolution of failures
 
