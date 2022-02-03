@@ -475,7 +475,7 @@
 
 - There are two type of cause regarding this error message. First, functions related with `showStopBtn()` are not defined correctly. In my case, toggle is not defined at addEventListener and not only `if(!started) {return;}` but also `const icon = document.querySelector('fa-stop');` are not added within `showStartBtn()`. Second, duplicated function `stopGame()` is declared once again on main loop even though `stopGame()` was already declared in there. So the symptom is the same, but the cause could be different. The reproduction is not always same.
 
-- <img src="./img/error1.png" width="700" height="300">
+- <img src="./img/error1.png" width="700" height="250">
 
 - countermeasure:
 
@@ -489,11 +489,11 @@
 - symptom: type error message was displayed on console tab. In addition, icons were not placed randomly when clicking game button. It displayed type error message named `Failed to execute 'addEventListener' on 'EventTarget':2 arguments required, but only 1 present.` `EventListener` needs 2 arguments such as type and function. For example, `type` use as `'click'` and `function` use as `callback`.
   I mis-use at `function showStartBtn()` { `const icon = document.addEventListener('.fa-stop');`}.
 
-- <img src="./img/error3.png" width="700" height="300">
+- <img src="./img/error3.png" width="700" height="250">
 
 - I checked cause of type error on source tab. Maybe the source tab is useful to find root cause when debugging.
 
-- <img src="./img/source1.png" width="700" height="300">
+- <img src="./img/source1.png" width="700" height="250">
 
 - countermeasure: `const icon = document.addEventListener('.fa-stop');` should be changed to `const icon = document.querySelector('.fa-stop');`
 
@@ -550,7 +550,7 @@
 
 - symptom: Uncaught SyntaxError message was displayed on console tab such as `Cannot use import statement outside a module`.
 
-- <img src="./img/error5.png" width="700" height="300">
+- <img src="./img/error5.png" width="700" height="250">
 
 - countermeasure: use `type = "module"` within tag named `script` on HTML file. For example, `<script type="module" src="./src/main.js>" defer></script>`.
 
@@ -560,7 +560,7 @@
   `this.onClick = onClick;`
   }.
 
-- <img src="./img/error6.png" width="700" height="300">
+- <img src="./img/error6.png" width="700" height="250">
 
 - countermeasure: Define parameter of callback. For example, `setClickListener(onClick)` {
   `this.onClick = onClick;`
@@ -570,6 +570,6 @@
 
 - symptom: Uncaught ReferenceError message was displayed on console tab such as `hide is not defined`. I find method function of class is defined `hide();` without this. In case of ReferenceError, function maybe operate correctly but error message would be displayed on console tab.
 
-- <img src="./img/error7.png" width="700" height="300">
+- <img src="./img/error7.png" width="700" height="250">
 
 - countermeasure: Define `this.hide();` within class instead of `hide();`.
