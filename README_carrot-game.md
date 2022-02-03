@@ -13,7 +13,7 @@
 
 - Image of carrots and bugs should be deleted when clicking the image of carrot and bug. In case of finished to click images of carrots and the image of carrot is empty on there before timeout, winner pop up message should be operated with icon of replay. In contrast, in case of not only timeout but also clicking bug image, loser pop up message should be operated with icon of replay.
 
-### 4. Basic carrot game
+### 4. Basic carrot-game
 
 - Application is created focusing on only operation regardless of optimizing.
 
@@ -142,7 +142,7 @@
   ` field.innerHTML= ``; `
   `showStartBtn();`
   `hideTimerandScore();`
-  `showPopupwithText('Replay?');`
+  `showPopupwithText('Replay? or Exit?');`
   }
   `function showGameBtn()` {
   `gameBtn.style.visibility = 'visible';`
@@ -201,7 +201,7 @@
 
 #### 4-4 Middle level output with random function
 
-- <img src="./img/basic-application/output1.png" width="700" height="400">
+- <img src="./img/basic-application/output1.gif" width="700" height="400">
 
 #### 4-5. Timer
 
@@ -360,14 +360,13 @@
   `stopGameTimer();`
   `showStopBtn();`
   `pauseSound(bgSound);`
-
-}
-`function hideTimerAndScore()` {
-`if(!started)`{
-`gameTimer.style.visibility = 'hidden';`
-`gameScore.style.visibility = 'hidden';`
-}
-}
+  }
+  `function hideTimerAndScore()` {
+  `if(!started)`{
+  `gameTimer.style.visibility = 'hidden';`
+  `gameScore.style.visibility = 'hidden';`
+  }
+  }
 
 - This is output using `addEventListener('contextmenu', xx)`.
   <img src="./img/basic-application/addexitBtn.gif" width="700" height="400">
@@ -430,17 +429,23 @@
 
 - <img src="./img/basic-application/carrot-game.gif" width="700" height="400">
 
-### 5. Resolution of failures
+### 5. Refactoring carrot-game
 
-#### 5-1.
+- The bad thing is not easy to manage and verify functions when changed point occur if codes are typed on just only one file even though application could operate normally. So, I think it would be better only one file is distrubuted to several files according to grouping functions. In case of distributed files as refactoring, I think there would be benefits from template. The template could be conveniently used for objects when you needed. For example, in case two type of cars need some of same functions, we could use refactoring file as source of two project cars regarding the same functions. The keyword named`export default` should be typed on refactoring file, and then, the keyword named `import from` should be typed on main javascript file. For example, if `export default class Popup {}` defined from refactoring file, `import PopUp from './popup.js'` should be defined on main javascript file.
+
+#### 5-1. Popup class
+
+### 6. Resolution of failures
+
+#### 6-1.
 
 - symptom: icons of not only carrot but also bug were positioned in rows. I did not use `item.style.position: 'absolute';`. In case of using `field.style.position: 'relative';`, icons would be positioned in rows even though I apply random function to coordinates because parent node of `field` named ` game__header` use `display: flex;`. Field element is also affected by `display: flex`.
 
-- <img src="./img/error2.png" width="700" height="400">
+- <img src="./img/error2.gif" width="700" height="400">
 
 - countermeasure: use `item.style.position: 'absolute';` to position item dependently itself without influence of parent element.
 
-#### 5-2.
+#### 6-2.
 
 - symptom: type error message was displayed on console tab. However, icons were placed randomly and correctly on field element. It means normal operation but displayed type error message named `Cannot read properties of null (reading 'classList') at showStopBtn.` The meaning of error message is that classList of showStopBtn is not found.
 
@@ -468,31 +473,31 @@
   7. execute icon.classList.remove('fa-stop') -> current class = 'fa-play'
   8. Btn image changed from 'stop' to 'play'
 
-- There are two type of this error message. First, functions related with the fucntion named showStopBtn are not defined correctly. In my case, toggle is not defined at addEventListener and not only `if(!started) {return;}` but also `const icon = document.querySelector('fa-stop');` is added within `showStartBtn()`. Second, duplicated function `stopGame()` is declared once again on main loop. The same error message cold occurred even though root causes did not come from at `showStopBtn()`.
+- There are two type of cause regarding this error message. First, functions related with `showStopBtn()` are not defined correctly. In my case, toggle is not defined at addEventListener and not only `if(!started) {return;}` but also `const icon = document.querySelector('fa-stop');` are not added within `showStartBtn()`. Second, duplicated function `stopGame()` is declared once again on main loop even though `stopGame()` was already declared in there. So the symptom is the same, but the cause could be different. The reproduction is not always same.
 
-- <img src="./img/error1.png" width="700" height="400">
+- <img src="./img/error1.png" width="700" height="200">
 
 - countermeasure:
 
-  1. Toggle Btn is applied to addEventListener, such as `gameBtn.addEventListner('click', ()=> {if(started) {stopGame();} else {startGame();} started=!started`. In addition, `if(!started){return;}` and `const icon = document.querySelector('fa-stop');` is added within `showStartBtn()`.
+  1. Toggle Btn is applied to addEventListener, such as `gameBtn.addEventListner('click', ()=> {if(started) {stopGame();} else {startGame();} started=!started`. In addition, `if(!started){return;}` and `const icon = document.querySelector('fa-stop');` is added within `showStartBtn()`. `const icon = document.querySelector('fas');` is also good choice.
   2. Check duplicated same function such as `stopGame()`.
   3. Add `stopGameTimer()` to prevent timer from discounting stanger value when clicking play button after clicking stop button. I think discounting trash value come from conflict between timer1 and timer2 because of miss to stop timer before `stopGame()`. The timer1 means discounting when clicking play button. The timer2 means discounting when clicking play button once again.
   4. Please refer file named `basic-application/main_resolve.js`.
 
-#### 5-3.
+#### 6-3.
 
-- symptom: type error message was displayed on console tab. In addition, icons were not placed randomly when clicking stop button. It displayed type error message named `Failed to execute 'addEventListener' on 'EventTarget':2 arguments required, but only 1 present.` `EventListener` needs 2 arguments such as type and function. For example, `type` use as `'click'` and `function` use as `callback`.
-  I mis-use `const icon = document.addEventListener('.fa-stop');` at `showStartBtn()`.
+- symptom: type error message was displayed on console tab. In addition, icons were not placed randomly when clicking game button. It displayed type error message named `Failed to execute 'addEventListener' on 'EventTarget':2 arguments required, but only 1 present.` `EventListener` needs 2 arguments such as type and function. For example, `type` use as `'click'` and `function` use as `callback`.
+  I mis-use at `function showStartBtn()` { `const icon = document.addEventListener('.fa-stop');`}.
 
-- <img src="./img/error3.png" width="700" height="400">
+- <img src="./img/error3.png" width="700" height="200">
 
-- I checked cause of type error on source tab.
+- I checked cause of type error on source tab. Maybe the source tab is useful to find root cause when debugging.
 
-- <img src="./img/source1.png" width="700" height="400">
+- <img src="./img/source1.png" width="700" height="200">
 
 - countermeasure: `const icon = document.addEventListener('.fa-stop');` should be changed to `const icon = document.querySelector('.fa-stop');`
 
-#### 5-4.
+#### 6-4.
 
 - symptom: malfunction timer without error message and gameBtn do not changed from play to stop. The reproduction sequence is as below
 
@@ -540,3 +545,31 @@
     8. started = `true` when executing `startGame()`.
     9. started = `true` before executing `stopGame()`.
     10. started = `false` when executing `stopGame()`.
+
+#### 6-5.
+
+- symptom: Uncaught SyntaxError message was displayed on console tab such as `Cannot use import statement outside a module`.
+
+- <img src="./img/error5.png" width="700" height="200">
+
+- countermeasure: use `type = "module"` within tag named `script` on HTML file. For example, `<script type="module" src="./src/main.js>" defer></script>`.
+
+#### 6-6.
+
+- symptom: Uncaught ReferenceError message was displayed on console tab such as `onClick is not defined`. I find parameter of callback function is not defined within class named `PopUp`. For example, `setClickListener()` {
+  `this.onClick = onClick;`
+  }.
+
+- <img src="./img/error6.png" width="700" height="200">
+
+- countermeasure: Define parameter of callback. For example, `setClickListener(onClick)` {
+  `this.onClick = onClick;`
+  }.
+
+#### 6-7.
+
+- symptom: Uncaught ReferenceError message was displayed on console tab such as `hide is not defined`. I find method function of class is defined `hide();` without this. In case of ReferenceError, function maybe operate correctly but error message would be displayed on console tab.
+
+- <img src="./img/error7.png" width="700" height="200">
+
+- countermeasure: Define `this.hide();` within class instead of `hide();`.

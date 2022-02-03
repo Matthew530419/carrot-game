@@ -48,7 +48,7 @@ function stopGame() {
     console.log('stopGame');
     hideGameBtn();
     stopGameTimer();
-    showPopupwithText();
+    showPopupwithText('Replay?');
 }
 
 function showGameBtn() {
@@ -72,7 +72,7 @@ gameBtn.addEventListener('click', ()=> {
 
 function showPopupwithText(text) {
     Popup.classList.remove('pop-up--hide');
-    PopupText.innerText = 'Replay?';
+    PopupText.innerText = text;
 }
 
 function hideGameBtn() {
