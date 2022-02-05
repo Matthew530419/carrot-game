@@ -431,9 +431,52 @@
 
 ### 5. Refactoring carrot-game
 
-- The bad thing is not easy to manage and verify functions when changed point occur if codes are typed on just only one file even though application could operate normally. So, I think it would be better only one file is distrubuted to several files according to grouping functions. In case of distributed files as refactoring, I think there would be benefits from template. The template could be conveniently used for objects when you needed. For example, in case two type of cars need some of same functions, we could use refactoring file as source of two project cars regarding the same functions. The keyword named`export default` should be typed on refactoring file, and then, the keyword named `import from` should be typed on main javascript file. For example, if `export default class Popup {}` defined from refactoring file, `import PopUp from './popup.js'` should be defined on main javascript file.
+- The bad thing is not easy to manage and verify functions when changed point occur if codes are typed on just only one file even though application could operate normally. So, I think it would be better only one file is distrubuted to several files according to grouping functions. In case of distributed files as refactoring, I think there would be benefits from template. The template could be conveniently used for objects when you needed. So, this is the reason why we use template of class as refactoring. There are two examples. First, in case two type of cars need some of same functions, we could use refactoring file as source of two project cars regarding the same functions. Second, in case you want to manage grouped functions on distributed files like component, use refactoring with template of class. In addition, in case of simple appication, using refactoring with template of class is more difficult than function in function. However, please remind that refactoring is easier if complicated application because template of class could make objects easily when you needed. The keyword named`export default` should be typed on refactoring file, and then, the keyword named `import from` should be typed on main javascript file. For example, if `export default class Popup {}` defined from refactoring file, `import PopUp from './popup.js'` should be defined on main javascript file.
 
 #### 5-1. Popup class
+
+- Variables within `constructor()` should be defined with `this` insted of keyword named `const`. Please think `this` is one of class syntax for easy understanding. In case of `addEventListener`, it could be included within `constructor()`. `this.onClick && this.onClick()` is same as `if(this.onClick){this.onClick();}`. `setClickListener(onClick)` means that this.onClick is defined callback function. So, not only `this.onClick && this.onClick()` but also `setClickListener(onClick)` are needed to use callback function within class. In case of functions related to the class, the functions you want could be defined as method of class. Each of element within function needs `this` because the function is one of class methods. In case of function named `showWithText(text)`, is renamed from `showPopupwithText(text)`. `Popup` of `showPopupwithText(text)` do not need to because the function is within class named `Popup`. This is duplicated. In case of function named `hide()`, it could be included within `constructor()` and it should be defined as `this.hide()` to refer the reference instead of `hide()`. `Uncaught ReferenceError` maybe occur if you use `hide()`.
+
+- In popup.js,
+  `export default class PopUp` {
+  `constructor()` {
+  `this.Popup` = document.querySelector(`'.pop-up'`);
+  `this.PopupText` = document.querySelector(`'.pop-up__message'`);
+  `this.PopupBtn` = document.querySelector(`'.pop-up__refresh'`);
+  `this.PopupBtn.addEventListener('click'`, () => {
+  `this.onClick && this.onClick();`
+  `this.hide();`
+  });
+  }
+  `setClickListener(onClick)` {
+  `this.onClick = onClick;`
+  }
+  `showWithText(text)` {
+  `this.Popup.classList.remove('pop-up--hide');`
+  `this.PopupText.innerText = text;`
+  }
+  `hide()` {
+  `this.Popup.classList.add('pop-up--hide');`
+  }
+  }
+
+- In main.js,
+  `const gameFinishpopUp = new PopUp();`
+  `gameFinishpopUp.setClickListener(`() => {
+  `replayGame();`
+  });
+  `function exitGame()` {
+  gameFinishpopUp.hide();
+  }
+  function replayGame() {
+  gameFinishpopUp.hide();
+  }
+  function finishGame(win) {
+  gameFinishpopUp.showWithText(win? 'You Won!' : 'You Lost!');
+  }
+  function stopGame() {
+  gameFinishpopUp.showWithText('Replay? or Exit?');
+  }
 
 ### 6. Resolution of failures
 
@@ -573,3 +616,58 @@
 - <img src="./img/error7.png" width="700" height="250">
 
 - countermeasure: Define `this.hide();` within class instead of `hide();`.
+
+#### 6-8.
+
+- symptom: `ReplayGame()` and `exitGame()` are operated together on main.js, even though `exitBtn.addEventListener` or `PopupBtn.addEventListener` is operated only one per proper event. So, the latest function is applied to application. In case of main.js, `ReplayGame()` would be applied to if latest function is `ReplayGame()` within `gameFinishpopup.setClickListener()`. In contrast, `exitGame()` would be applied to if latest function is `exitGame()`. `exitBtn.addEventListener` or `PopupBtn.addEventListener` are defined within class named `Popup` respectively. I do not know why `ReplayGame()` and `exitGame()` are operated together on main.js. The reason why two functions operate together is that Onclick() is operated on two functions per event.
+
+- In case of popup.js,
+  `export default class PopUp` {
+  `constructor()` {
+  `this.Popup` = document.querySelector(`'.pop-up'`);
+  `this.PopupText` = document.querySelector(`'.pop-up__message'`);
+  `this.PopupBtn` = document.querySelector(`'.pop-up__refresh'`);
+  `this.exitBtn` = document.querySelector(`'.pop-up__exit'`);
+  `if(PopupBtn)`{
+  `this.PopupBtn.addEventListener('click'`, () => {
+  `this.onClick && this.onClick();`
+  `this.hide();`
+  });
+  }
+  `if(exitBtn)`{
+  `this.exitBtn.addEventListener('click'`, () => {
+  `this.onClick && this.onClick();`
+  `this.hide();`
+  });
+  }
+  `setClickListener(onClick)` {
+  `this.onClick = onClick;`
+  }
+
+- In case of main.js,
+
+- `const PopupBtn` = document.querySelector(`'.pop-up__refresh'`);
+  `const exitBtn` = document.querySelector(`'.pop-up__exit'`);
+  `const gameFinishpopup = new Popup();`
+  `gameFinishpopup.setClickListener` {
+  `if(PopupBtn)` {
+  `replayGame();`
+  } `else if(exitBtn)` {
+  `exitGame();`
+  }
+  }
+
+- <img src="./img/error8.gif" width="700" height="400">
+  <img src="./img/error9.gif" width="700" height="400">
+
+- countermeasure: In case of `popup.js`, `arugment` is added on `setClickListener` to use `field variable`, and then, `field variable` should be defined on `setClickListener` for object on main.js. In case of `main.js`, field variable should be used on setClickListener without `const PopupBtn` and `const exitBtn`. Please use `this[buttonName]`, not `this.[buttonName]`.
+
+- In case of popup.js,
+  `setClickListener`(buttonName, onClick) {
+  `this[buttonName].addEventListener('click'`, `onClick`);
+  }
+
+- In case of main.js,
+  `const gameFinishpopup = new Popup();`
+  `gameFinishpopUp.setClickListener`(`'PopupBtn'`, `replayGame`);
+  `gameFinishpopUp.setClickListener`(`'exitBtn'`, `exitGame`);

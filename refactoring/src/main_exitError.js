@@ -1,6 +1,6 @@
 'use strict';
 
-import PopUp from './popup.js';
+import PopUp from './popup_exitError.js';
 
 const field = document.querySelector('.game__field');
 const fieldRect = field.getBoundingClientRect();
@@ -12,7 +12,8 @@ const Carrot_Count = 10;
 const Bug_Count = 10;
 const GAME_DURATION_SEC = 10;
 
-const exitBtn = document.querySelector('.pop-up__exit');
+//const PopupBtn = document.querySelector('.pop-up__refresh');
+//const exitBtn = document.querySelector('.pop-up__exit');
 
 const carrotSound = new Audio('./sound/carrot_pull.mp3');
 const bugSound = new Audio('./sound/bug_pull.mp3');
@@ -29,9 +30,13 @@ const gameFinishpopUp = new PopUp();
 gameFinishpopUp.setClickListener('PopupBtn', replayGame);
 gameFinishpopUp.setClickListener('exitBtn', exitGame);
 
-exitBtn.addEventListener('click', ()=> {
-    exitGame();
-})
+//ameFinishpopUp.setClickListener(()=> {
+//    if(PopupBtn){
+//        replayGame();
+//    } else if(exitBtn){
+//        exitGame();
+//    }
+//})
 
 gameBtn.addEventListener('click', ()=> {
     //console.log(started);
@@ -105,7 +110,7 @@ function finishGame(win) {
 function replayGame() {
     started = false;
     //console.log(started);
-    //console.log('replayGame');
+    console.log('replayGame');
     initScore();
     updateScore();
     startGame();

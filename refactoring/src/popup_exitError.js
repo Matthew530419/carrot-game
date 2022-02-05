@@ -10,16 +10,20 @@ export default class PopUp {
             this.onClick && this.onClick();
             this.hide();
             console.log('replayGame');
-        });
-        this.exitBtn.addEventListener('click', ()=> {
+            });
+        this.exitBtn.addEventListener('click', () => {
             this.onClick && this.onClick();
             this.hide();
             console.log('exitGame');
-        })
+            });
+    
     }
 
+    //setClickListener(onClick) {
+    //    this.onClick = onClick;
+    //}
+
     setClickListener(buttonName, onClick) {
-        this.onClick = onClick;
         this[buttonName].addEventListener('click', onClick);
     }
 

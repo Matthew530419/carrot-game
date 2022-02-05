@@ -1,7 +1,5 @@
 'use strict';
 
-import PopUp from './popup.js';
-
 const field = document.querySelector('.game__field');
 const fieldRect = field.getBoundingClientRect();
 const gameBtn = document.querySelector('.game__button');
@@ -11,7 +9,9 @@ const Carrot_Size = 80;
 const Carrot_Count = 10;
 const Bug_Count = 10;
 const GAME_DURATION_SEC = 10;
-
+const Popup = document.querySelector('.pop-up');
+const PopupText = document.querySelector('.pop-up__message');
+const PopupBtn = document.querySelector('.pop-up__refresh');
 const exitBtn = document.querySelector('.pop-up__exit');
 
 const carrotSound = new Audio('./sound/carrot_pull.mp3');
@@ -24,18 +24,13 @@ let started = false;
 let timer = undefined;
 let score = 0;
 
-const gameFinishpopUp = new PopUp();
-
-gameFinishpopUp.setClickListener('PopupBtn', replayGame);
-gameFinishpopUp.setClickListener('exitBtn', exitGame);
-
 exitBtn.addEventListener('click', ()=> {
     exitGame();
 })
 
 gameBtn.addEventListener('click', ()=> {
-    //console.log(started);
-    //console.log('gameBtn');
+    console.log(started);
+    console.log('gameBtn');
     if (started) {
         stopGame();
     } else {
@@ -43,6 +38,11 @@ gameBtn.addEventListener('click', ()=> {
     } 
 })
 
+PopupBtn.addEventListener('click', ()=> {
+    console.log(started);
+    console.log('popupBtn');
+    replayGame();
+})
 
 field.addEventListener('click', onFieldClick);
 
@@ -85,14 +85,14 @@ function exitGame() {
     showStopBtn();
     showGameBtn();
     pauseSound(bgSound);
-    gameFinishpopUp.hide();
+    hidePopupwithText();
 }
 
 function finishGame(win) {
     started = false;
     stopGameTimer();
     hideGameBtn();
-    gameFinishpopUp.showWithText(win? 'You Won!' : 'You Lost!');
+    showPopupwithText(win? 'You Won!' : 'You Lost!');
     if(Carrot_Count === score) {
         playSound(winSound);
         pauseSound(bgSound);
@@ -104,19 +104,19 @@ function finishGame(win) {
 
 function replayGame() {
     started = false;
-    //console.log(started);
-    //console.log('replayGame');
+    console.log(started);
+    console.log('replayGame');
     initScore();
     updateScore();
     startGame();
     showGameBtn();
-    gameFinishpopUp.hide();
+    hidePopupwithText();
 }
 
 function startGame() {
     started = true;
-    //console.log(started);
-    //console.log('startGame');
+    console.log(started);
+    console.log('startGame');
     field.innerHTML = ``;
     showStopBtn();
     showTimerAndScore();
@@ -127,11 +127,11 @@ function startGame() {
 
 function stopGame() {
     started = false;
-    //console.log(started);
-    //console.log('stopGame');
+    console.log(started);
+    console.log('stopGame');
     hideGameBtn();
     stopGameTimer();
-    gameFinishpopUp.showWithText('Replay? or Exit?');
+    showPopupwithText('Replay? or Exit?');
     pauseSound(bgSound);
     playSound(alertSound);
 }
@@ -152,6 +152,15 @@ function showGameBtn() {
 
 function hideGameBtn() {
     gameBtn.style.visibility = 'hidden';
+}
+
+function showPopupwithText(text) {
+    Popup.classList.remove('pop-up--hide');
+    PopupText.innerText = text;
+}
+
+function hidePopupwithText() {
+    Popup.classList.add('pop-up--hide');
 }
 
 function showStopBtn() {
