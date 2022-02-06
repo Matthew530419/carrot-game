@@ -1,5 +1,6 @@
 'use strict';
 
+import Field from './field.js';
 import PopUp from './popup.js';
 
 const field = document.querySelector('.game__field');
@@ -12,9 +13,7 @@ const Carrot_Count = 10;
 const Bug_Count = 10;
 const GAME_DURATION_SEC = 10;
 
-const exitBtn = document.querySelector('.pop-up__exit');
 
-const carrotSound = new Audio('./sound/carrot_pull.mp3');
 const bugSound = new Audio('./sound/bug_pull.mp3');
 const bgSound = new Audio('./sound/bg.mp3');
 const winSound = new Audio('./sound/game_win.mp3');
@@ -29,9 +28,7 @@ const gameFinishpopUp = new PopUp();
 gameFinishpopUp.setClickListener('PopupBtn', replayGame);
 gameFinishpopUp.setClickListener('exitBtn', exitGame);
 
-exitBtn.addEventListener('click', ()=> {
-    exitGame();
-})
+const gameField = new Field(Carrot_Count, Bug_Count, Carrot_Size);
 
 gameBtn.addEventListener('click', ()=> {
     //console.log(started);
@@ -43,24 +40,20 @@ gameBtn.addEventListener('click', ()=> {
     } 
 })
 
+gameField.setClickListener(onFieldClick);
 
-field.addEventListener('click', onFieldClick);
-
-function onFieldClick(event) {
+function onFieldClick(item) {
     if(!started) {
         return;
     }
-    console.log('remove');
-    const target = event.target;
-    if(target.matches('.carrot')) {
-        target.remove();
+    //console.log('remove');
+    if(item === 'carrot') {
         score++;
-        playSound(carrotSound);
         updateScore();
         if(Carrot_Count === score) {
             finishGame(true);
         }
-    } else if(target.matches('.bug')) {
+    } else if(item ==='bug') {
         finishGame(false);
     }
 }
@@ -204,28 +197,5 @@ function updateTimeText(time) {
 }
 
 function initGame() {
-    addItem('carrot', Carrot_Count, 'img/carrot.png');
-    addItem('bug', Bug_Count, 'img/bug.png');
-}
-
-function addItem(className, count, imgPath) {
-    const x1 = 0;
-    const y1 = 0;
-    const x2 = fieldRect.width - Carrot_Size;
-    const y2 = fieldRect.height - Carrot_Size;
-    for(let i=0; i < count; i++) {
-        const item = document.createElement('img');
-        item.setAttribute('class', className);
-        item.setAttribute('src', imgPath);
-        item.style.position = 'absolute';
-        const x = randomNumber(x1, x2);
-        const y = randomNumber(y1, y2);
-        item.style.left = `${x}px`;
-        item.style.top = `${y}px`;
-        field.appendChild(item);
-    }
-}
-
-function randomNumber(min, max) {
-    return Math.random() * (max - min) + min;
+    gameField.init();
 }

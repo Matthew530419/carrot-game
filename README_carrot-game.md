@@ -1,6 +1,6 @@
 ### 1. Project name: Creating application of carrot-game
 
-### 2. Period : 1 week
+### 2. Period : 1 week 2 days
 
 ### 3. Concept of game
 
@@ -460,7 +460,7 @@
 
 #### 5-1. Popup class
 
-- Variables within `constructor()` should be defined with `this` insted of keyword named `const`. Please think `this` is one of class syntax for easy understanding. In case of `addEventListener`, it could be included within `constructor()`. `this.onClick && this.onClick()` is same as `if(this.onClick){this.onClick();}`. `setClickListener(onClick)` means that this.onClick is defined callback function. So, not only `this.onClick && this.onClick()` but also `setClickListener(onClick)` are needed to use callback function within class. In case of functions related to the class, the functions you want could be defined as method of class. Each of element within function needs `this` because the function is one of class methods. In case of function named `showWithText(text)`, is renamed from `showPopupwithText(text)`. `Popup` of `showPopupwithText(text)` do not need to because the function is within class named `Popup`. This is duplicated. In case of function named `hide()`, it could be included within `constructor()` and it should be defined as `this.hide()` to refer the reference instead of `hide()`. `Uncaught ReferenceError` maybe occur if you use `hide()`.
+- Variables within `constructor()` should be defined with `this` insted of keyword named `const`. Please think `this` is one of class syntax for easy understanding. In case of `addEventListener`, it could be included within `constructor()`. `this.onClick && this.onClick()` is same as `if(this.onClick){this.onClick();}`. `setClickListener(onClick)` means that this.onClick is defined callback function. So, not only `this.onClick && this.onClick()` but also `setClickListener(onClick)` are needed to use callback function within class. In case of functions related to the class, the functions you want could be defined as method of class. Each of element within function needs `this` because the function is one of class methods. In case of function named `showWithText(text)`, is renamed from `showPopupwithText(text)`. `Popup` of `showPopupwithText(text)` do not need to because the function is within class named `Popup`. This is duplicated. In case of function named `hide()`, it could be included within `constructor()` and it should be defined as `this.hide()` to refer the reference instead of `hide()`. `Uncaught ReferenceError` maybe occur if you use `hide()`. The reason why I use `this.PopupBtn.addEventListener('click', ()=> {this.onClick && this.onClick(); this.hide();});` rather than `this.PopupBtn.addEventListener('click', onClick());` is that `this.hide()` should be operated when clicking `PopupBtn`.
 
 - In popup.js,
   `export default class PopUp` {
@@ -473,8 +473,9 @@
   `this.hide();`
   });
   }
-  `setClickListener(onClick)` {
+  `setClickListener(buttonName, onClick)` {
   `this.onClick = onClick;`
+  `this[buttonName].addEventListener('click', onClick);`
   }
   `showWithText(text)` {
   `this.Popup.classList.remove('pop-up--hide');`
@@ -487,21 +488,102 @@
 
 - In main.js,
   `const gameFinishpopUp = new PopUp();`
-  `gameFinishpopUp.setClickListener(`() => {
-  `replayGame();`
-  });
+  `gameFinishpopUp.setClickListener('PopupBtn', replayGame);`
+  `gameFinishpopUp.setClickListener('exitBtn', exitGame);`
   `function exitGame()` {
-  gameFinishpopUp.hide();
+  `gameFinishpopUp.hide();`
   }
-  function replayGame() {
-  gameFinishpopUp.hide();
+  `function replayGame()` {
+  `gameFinishpopUp.hide();`
   }
-  function finishGame(win) {
-  gameFinishpopUp.showWithText(win? 'You Won!' : 'You Lost!');
+  `function finishGame(win)` {
+  `gameFinishpopUp.showWithText(win? 'You Won!' : 'You Lost!');`
   }
-  function stopGame() {
-  gameFinishpopUp.showWithText('Replay? or Exit?');
+  `function stopGame()` {
+  `gameFinishpopUp.showWithText('Replay? or Exit?');`
   }
+
+- In case of all codes, Please refer file named `refactoring/main.js` and `refecotring/popup.js`.
+
+#### 5-2. Field class
+
+- Fields parameters are defined as `Carrot_Count`, `Bug_Count`, `Carrot_Size` because these variable could get from main.js. In case of methods, some of functions are moved from main.js to class of field.js considering field rules of application. `onFieldClick()` from main.js is distributed to not only `onClick()` on `field.js` but also `onFieldClick()` on `main.js` according to the rules of application. `this.onItemClick && this.onItemClick('carrot')` is used with callback function to operate `onClick()` and `onFieldClick()` at the same time. `'carrot'` and `'bug'` is used as callback function parameter to set up operation condition. In addition, functions named `randomNumber()` and `playSound()` are used as static function because these functions would use on only field.js. In case of using function on only this javascript file, you can use static function, rather than method of class. In case of `if(item === 'carrot')` and `if(item === 'bug')` of `onFieldClick()` on main.js, application images of carrot and bug are item and `event.target` would be duplicated between `onClick()` and `onFieldClick()` if I use target. I use item rather than target to optimize the memory. In case of javascript, please remind template of class can not be transfered if the function is within other function. `this` binding should be used to transfer template of class to the function within other function.
+
+- In case of field.js,
+  `'use strict';`
+  `const carrotSound = new Audio('./sound/carrot_pull.mp3');`
+  `export default class Field` {
+  `constructor(Carrot_Count, Bug_Count, Carrot_Size)` {
+  `this.Carrot_Count = Carrot_Count;`
+  `this.Bug_Count = Bug_Count;`
+  `this.Carrot_Size = Carrot_Size;`
+  `this.field = document.querySelector('.game__field');`
+  `this.fieldRect = this.field.getBoundingClientRect();`
+  `this.field.addEventListener('click', (event) => this.onClick(event));`
+  }
+  `init()` {
+  `this.field.innerHTML` = `template literal * 2`.
+  `this.addItem('carrot', this.Carrot_Count, 'img/carrot.png');`
+  `this.addItem('bug', this.Bug_Count, 'img/bug.png');`
+  }
+  `addItem(className, count, imgPath)` {
+  `const x1 = 0;`
+  `const y1 = 0;`
+  `const x2 = this.fieldRect.width - this.Carrot_Size;`
+  `const y2 = this.fieldRect.height - this.Carrot_Size;`
+  `for(let i=0; i < count; i++)` {
+  `const item = document.createElement('img');`
+  `item.setAttribute('class', className);`
+  `item.setAttribute('src', imgPath);`
+  `item.style.position = 'absolute';`
+  `const x = randomNumber(x1, x2);`
+  `const y = randomNumber(y1, y2);`
+  `item.style.left = `${x}px`;`
+  `item.style.top = `${y}px`;`
+  `this.field.appendChild(item);`
+  }
+  }
+  `setClickListener(onItemClick)` {
+  `this.onItemClick = onItemClick;`
+  }
+  `onClick(event)` {
+  `const target = event.target;`
+  `if(target.matches('.carrot'))` {
+  `target.remove();`
+  `playSound(carrotSound);`
+  `this.onItemClick && this.onItemClick('carrot');`
+  } `else if(target.matches('.bug'))` {
+  `this.onItemClick && this.onItemClick('bug');`
+  }
+  }
+  }
+  `function randomNumber(min, max)` {
+  `return Math.random() \* (max - min) + min;`
+  }
+  `function playSound(sound)` {
+  `sound.play();`
+  `sound.currentTime = 0;`
+  }
+
+- In case of main.js,
+  `const gameField = new Field(Carrot_Count, Bug_Count, Carrot_Size);`
+  `gameField.setClickListener(onFieldClick);`
+  `function onFieldClick()` {
+  `if(!started)` {
+  `return;`
+  }
+  `if(item === 'carrot')` {
+  `score++;`
+  `updateScore();`
+  `if(Carrot_Count === score)` {
+  `finishGame(true);`
+  }
+  } `else if(item === 'bug')` {
+  `finishGame(false);`
+  }
+  }
+
+- In case of all codes, Please refer file named `refactoring/main.js` and `refecotring/field.js`.
 
 ### 6. Resolution of failures
 
@@ -696,3 +778,95 @@
   `const gameFinishpopup = new Popup();`
   `gameFinishpopUp.setClickListener`(`'PopupBtn'`, `replayGame`);
   `gameFinishpopUp.setClickListener`(`'exitBtn'`, `exitGame`);
+
+#### 6-9.
+
+- symptom: icons of carrots and bugs are positioned at only one coordinates with Not a Number(NaN) even though function has random values. There is not error message. I do not consider `Carrot_Size` and `x2`, `y2` values are calculated with `this.Carrot_Size`. So, `x2`, `y2` values displayed NaN abnormally.
+
+- In case of field.js,
+  `export default class Field` {
+  `constructor(Carrot_Count, Bug_Count)` {
+  `this.Carrot_Count = Carrot_Count;`
+  `this.Bug_Count = Bug_Count;`
+  `this.field = document.querySelector('.game__field');`
+  `this.fieldRect = this.field.getBoundingClientRect();`
+  `this.field.addEventListener('click', this.onClick);`
+  }
+
+  `addItem(className, count, imgPath)` {
+  `const x2 = this.fieldRect.width - this.Carrot_Size;`
+  `const y2 = this.fieldRect.height - this.Carrot_Size;`
+  `for(let i=0; i < count; i++)` {
+  `const item = document.createElement('img');`
+  `item.setAttribute('class', className);`
+  `item.setAttribute('src', imgPath);`
+  `item.style.position = 'absolute';`
+  `const x = randomNumber(x1, x2);`
+  `const y = randomNumber(y1, y2);`
+  `item.style.left = `${x}px`;`
+  `item.style.top = `${y}px`;`
+  `this.field.appendChild(item);`
+  }
+  }
+
+- In case of main.js,
+  `const gameField = new Field(Carrot_Count, Bug_Count, Carrot_Size);`
+
+- <img src="./img/error10.gif" width="700" height="400">
+
+- countermeasure: `Carrot_Size` is considered as field parameter on `constructor()`.
+
+- In case of field.js,
+  `export default class Field` {
+  `constructor(Carrot_Count, Bug_Count, Carrot_Size)` {
+  `this.Carrot_Size = Carrot_Size;`
+  }
+
+#### 6-10.
+
+- symptom: `setClickListener()` on class named `Field` is not operated without error message. `this.onItemClick && this.onItemClick();` is within `Onclick()`. In case of javascript, unlike other computing language, template of class can not be transfered if the function is within other function. The reason, `this` would be not in there and value should be `undefined` when `onClick()` use as callback. So, `this` binding should be used to transfer template of class to the function within other function.
+
+- In case of field.js,
+  `export default class Field` {
+  `constructor(carrotCount, bugCount, carrotSize)` {
+  `this.field.addEventListener`('click', `this.onClick`);
+  }
+  `setClickListener(onItemClick)`{
+  `this.onItemClick = onItemClick;`
+  }
+  `onClick(event)` {
+  `const target = event.target;`
+  `if(target.matches('.carrot'))` {
+  `this.onItemClick && this.onItemClick('carrot');`
+  } `else if(target.matches('.bug'))` {
+  `this.onItemClick && this.onItemClick('bug');`
+  }
+  }
+  }
+
+- <img src="./img/error11.gif" width="700" height="400">
+
+- countermeasure: use this binding as below.
+
+  1. use `this.onClick = this.onClick.bind(this);` within `constructor()` above `this.field.addEventListener`('click', `this.onClick`); to define callback function directly with `this` once again.
+
+  - `export default class Field` {
+    `constructor(carrotCount, bugCount, carrotSize)` {
+    `this.onClick = this.onClick.bind(this);`
+    `this.field.addEventListener`('click', `this.onClick`);
+    }
+
+  2. use `this.field.addEventListener('click'`, `(event)` => `this.onClick(event)`); to define callback function with allow function once again.
+
+  - `export default class Field` {
+    `constructor(carrotCount, bugCount, carrotSize)` {
+    `this.field.addEventListener`('click', `(event)` `=>` `this.onClick(event`);
+    }
+
+  3. use `onClick()` as variable with arrow function without any change within `constructor()`. `onClick(event) {` could be changed to `onClick = event => {`.
+
+  - `export default class Field` {
+    `constructor(carrotCount, bugCount, carrotSize)` {
+    `this.field.addEventListener`('click', `this.onClick`);
+    }
+    `onClick` `= event => {`
