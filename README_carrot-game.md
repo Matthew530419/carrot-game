@@ -197,7 +197,7 @@
   `return Math.random() * (max - min) + min;`
   }
 
-- In case of all codes, Please refer file named `basic-application/main.js`.
+- In case of all codes, Please refer file named `basic-application/main_middle_output.js`.
 
 #### 4-4 Middle level output with random function
 
@@ -425,7 +425,32 @@
 
 - In case of all codes, Please refer file named `basic-application/main_addexitBtn2.js`.
 
-#### 4-8. Output
+#### 4-10. Checking user covenience
+
+- User convenience is important because customer of application is user. In case of user covenience, please check with user preference. The user covenience and user preference have synergy. Checking and improving user convenience is to improve function quality and application value. Checking user preference is to catch customer needs. So, they have complementary relationship and should be considered together.
+
+- User could mis-click the timer block or score block. Shading block could be shown to user unnecessarily when mis-clicking the timer block or score block. To remove unnecessarily displayed blue shading block, use `user-select: none;`. In addition, use `transform` and `transition` to increase size of scale. The goal is to make it easier for user to know whether or not mouse cursor points icons.
+
+- <img src="./img/basic-application/user1.gif" width="700" height="400">
+  <img src="./img/basic-application/user2.gif" width="700" height="400">
+
+- In case of CSS file,
+  `.game__timer` {
+  `user-select: none;`
+  }
+  `.game__score` {
+  `user-select: none;`
+  }
+  `.carrot`,
+  `.bug` {
+  `transition: transform 100ms ease-in;`
+  }
+  `.carrot:hover`,
+  `.bug:hover` {
+  `transform: scale(1.1);`
+  }
+
+#### 4-11. Output
 
 - <img src="./img/basic-application/carrot-game.gif" width="700" height="400">
 
