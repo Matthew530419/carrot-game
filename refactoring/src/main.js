@@ -2,9 +2,8 @@
 
 import Field from './field.js';
 import PopUp from './popup.js';
+import * as sound from './sound.js';
 
-const field = document.querySelector('.game__field');
-const fieldRect = field.getBoundingClientRect();
 const gameBtn = document.querySelector('.game__button');
 const gameTimer = document.querySelector('.game__timer');
 const gameScore = document.querySelector('.game__score');
@@ -12,12 +11,6 @@ const Carrot_Size = 80;
 const Carrot_Count = 10;
 const Bug_Count = 10;
 const GAME_DURATION_SEC = 10;
-
-
-const bugSound = new Audio('./sound/bug_pull.mp3');
-const bgSound = new Audio('./sound/bg.mp3');
-const winSound = new Audio('./sound/game_win.mp3');
-const alertSound = new Audio('./sound/alert.wav');
 
 let started = false;
 let timer = undefined;
@@ -58,27 +51,18 @@ function onFieldClick(item) {
     }
 }
 
-function playSound(sound) {
-    sound.play();
-    sound.currentTime = 0;
-}
-
-function pauseSound(sound) {
-    sound.pause();
-}
-
 function exitGame() {
     console.log('exitGame');
     started = false;
-    field.innerHTML = ``;
     initScore();
     updateScore();
     hideTimerAndScore();
     stopGameTimer();
     showStopBtn();
     showGameBtn();
-    pauseSound(bgSound);
+    sound.stopBackground();
     gameFinishpopUp.hide();
+    gameField.exit();
 }
 
 function finishGame(win) {
@@ -87,11 +71,11 @@ function finishGame(win) {
     hideGameBtn();
     gameFinishpopUp.showWithText(win? 'You Won!' : 'You Lost!');
     if(Carrot_Count === score) {
-        playSound(winSound);
-        pauseSound(bgSound);
+        sound.playWin();
+        sound.stopBackground();
     } else {
-        playSound(bugSound);
-        pauseSound(bgSound);
+        sound.playBug();
+        sound.stopBackground();
     }
 }
 
@@ -110,12 +94,11 @@ function startGame() {
     started = true;
     //console.log(started);
     //console.log('startGame');
-    field.innerHTML = ``;
     showStopBtn();
     showTimerAndScore();
     startGameTimer();
     initGame();
-    playSound(bgSound);
+    sound.playBackground();
 }
 
 function stopGame() {
@@ -125,8 +108,8 @@ function stopGame() {
     hideGameBtn();
     stopGameTimer();
     gameFinishpopUp.showWithText('Replay? or Exit?');
-    pauseSound(bgSound);
-    playSound(alertSound);
+    sound.stopBackground();
+    sound.playAlert();
 }
 
 function initScore() {

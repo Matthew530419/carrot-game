@@ -509,8 +509,11 @@
 
 - Fields parameters are defined as `Carrot_Count`, `Bug_Count`, `Carrot_Size` because these variable could get from main.js. In case of methods, some of functions are moved from main.js to class of field.js considering field rules of application. `onFieldClick()` from main.js is distributed to not only `onClick()` on `field.js` but also `onFieldClick()` on `main.js` according to the rules of application. `this.onItemClick && this.onItemClick('carrot')` is used with callback function to operate `onClick()` and `onFieldClick()` at the same time. `'carrot'` and `'bug'` is used as callback function parameter to set up operation condition. In addition, functions named `randomNumber()` and `playSound()` are used as static function because these functions would use on only field.js. In case of using function on only this javascript file, you can use static function, rather than method of class. In case of `if(item === 'carrot')` and `if(item === 'bug')` of `onFieldClick()` on main.js, application images of carrot and bug are item and `event.target` would be duplicated between `onClick()` and `onFieldClick()` if I use target. I use item rather than target to optimize the memory. In case of javascript, please remind template of class can not be transfered if the function is within other function. `this` binding should be used to transfer template of class to the function within other function.
 
+- Add `import * as sound from './sound.js';` to refer the reference of sound on sound.js.
+
 - In case of field.js,
   `'use strict';`
+  `import * as sound from './sound.js';`
   `const carrotSound = new Audio('./sound/carrot_pull.mp3');`
   `export default class Field` {
   `constructor(Carrot_Count, Bug_Count, Carrot_Size)` {
@@ -525,6 +528,9 @@
   `this.field.innerHTML` = `template literal * 2`.
   `this.addItem('carrot', this.Carrot_Count, 'img/carrot.png');`
   `this.addItem('bug', this.Bug_Count, 'img/bug.png');`
+  }
+  `exit()` {
+  ` this.field.innerHTML = ``; `
   }
   `addItem(className, count, imgPath)` {
   `const x1 = 0;`
@@ -550,7 +556,7 @@
   `const target = event.target;`
   `if(target.matches('.carrot'))` {
   `target.remove();`
-  `playSound(carrotSound);`
+  `sound.playCarrot();`
   `this.onItemClick && this.onItemClick('carrot');`
   } `else if(target.matches('.bug'))` {
   `this.onItemClick && this.onItemClick('bug');`
@@ -559,10 +565,6 @@
   }
   `function randomNumber(min, max)` {
   `return Math.random() \* (max - min) + min;`
-  }
-  `function playSound(sound)` {
-  `sound.play();`
-  `sound.currentTime = 0;`
   }
 
 - In case of main.js,
@@ -582,8 +584,76 @@
   `finishGame(false);`
   }
   }
+  `function exitGame()` {
+  `gameField.exit();`
+  }
 
 - In case of all codes, Please refer file named `refactoring/main.js` and `refecotring/field.js`.
+
+#### 5-3. Sound class
+
+- `import * as sound from './sound.js';` means to insert sound into the current scope, containing all the exports from the module in the file from `'./sound.js'`. so you can refer the reference of all export functions on any other javascript file. You do not need to define variable and node to use sound. For example, just use `sound.palyCarrot();` within any functions on any javascript file.
+
+- In case of sound.js,
+  `const carrotSound = new Audio('./sound/carrot_pull.mp3');`
+  `const bugSound = new Audio('./sound/bug_pull.mp3');`
+  `const bgSound = new Audio('./sound/bg.mp3');`
+  `const winSound = new Audio('./sound/game_win.mp3');`
+  `const alertSound = new Audio('./sound/alert.wav');`
+  `export function playCarrot()` {
+  `playSound(carrotSound);`
+  }
+  `export function playBug()` {
+  `playSound(bugSound);`
+  }
+  `export function playAlert()` {
+  `playSound(alertSound);`
+  }
+  `export function playWin()` {
+  `playSound(winSound);`
+  }
+  `export function playBackground()` {
+  `playSound(bgSound);`
+  }
+  `export function stopBackground()` {
+  `pauseSound(bgSound);`
+  }
+  `function playSound(sound)` {
+  `sound.play();`
+  `sound.currentTime = 0;`
+  }
+  `function pauseSound(sound)` {
+  `sound.pause();`
+  }
+
+- In case of main.js,
+  `import * as sound from './sound.js';`
+  `function onFieldClick(item)` {
+  `if(item === 'carrot')` {
+  `sound.playCarrot();`
+  }
+  }
+  `function exitGame`() {
+  `sound.stopBackground();`
+  }
+  `function finishGame(win)` {
+  `if(Carrot_Count === score)` {
+  `sound.playWin();`
+  `sound.stopBackground();`
+  } `else` {
+  `sound.playBug();`
+  `sound.stopBackground();`
+  }
+  }
+  `function startGame`() {
+  `sound.playBackground();`
+  }
+  `function stopGame()` {
+  `sound.stopBackground();`
+  `sound.playAlert();`
+  }
+
+- In case of all codes, Please refer file named `refactoring/main.js`, `refactoring/field.js` and `refecotring/sound.js`.
 
 ### 6. Resolution of failures
 
