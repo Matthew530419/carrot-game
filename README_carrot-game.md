@@ -1,6 +1,6 @@
 ### 1. Project name: Creating application of carrot-game
 
-### 2. Period : 1 week 2 days
+### 2. Period : 1 week 3 days
 
 ### 3. Concept of game
 
@@ -655,6 +655,172 @@
 
 - In case of all codes, Please refer file named `refactoring/main.js`, `refactoring/field.js` and `refecotring/sound.js`.
 
+#### 5-4. Game class
+
+- 4 arguments of `constructor()` on `game.js` are needed to use 4 variables as paremeter of class on `main.js`. `gameField` is object with class `Field`. The rule of `gameField` is to use functions from field.js to game.js. `gameFinishpopup` is object with class `Popup`. The rule of `gameFinishpopup` is to use functions from popup.js to game.js. The reason why `gameFinishpopup` is applied to game.js is to use `replay()` and `exit()` with class `Popup` on game.js. I can not use `replay()` and `exit()` on main.js because `replay()` and `exit()` are the functions on game.js. In case of `replay()` and `exit()`, this binding should be applied to because this binding prevents template of class from not transfered when `field.js` and `popup.js` are imported indirectly. In addition, most of variable needs `this.` to operate within class correctly. However, in case of `import * as sound from './sound.js';`, `this.` do not need to because sound was already inserted into current scope.
+
+- Use `setgameStopListener()` as callback function to display reason when stop the game.
+
+- `'use strict';`
+  `import Field from './field.js';`
+  `import PopUp from './popup.js';`
+  `import * as sound from './sound.js';`
+  `export default class Game` {
+  `constructor(durationSec, carrotCount, bugCount, carrotSize)` {
+  `this.durationSec = durationSec;`
+  `this.carrotCount = carrotCount;`
+  `this.bugCount = bugCount;`
+  `this.carrotSize = carrotSize;`
+  `this.gameTimer` = document.querySelector(`'.game__timer'`);
+  `this.gameScore` = document.querySelector(`'.game__score'`);
+  `this.gameBtn` = document.querySelector(`'.game__button'`);
+  `this.gameBtn.addEventListener('click'`, `()=> {`
+  `if (this.started)` {
+  `this.stop();`
+  } `else` {
+  `this.start();`
+  }
+  })
+  `this.started = false;`
+  `this.timer = undefined;`
+  `this.score = 0;`
+  `this.gameField` = `new Field(carrotCount, bugCount, carrotSize);`
+  `this.gameField.setClickListener`(`this.onFieldClick`);
+  `this.gameFinishpopUp` = `new PopUp();`
+  `this.gameFinishpopUp.setClickListener`(`'PopupBtn', this.replay`);
+  `this.gameFinishpopUp.setClickListener`(`'exitBtn', this.exit`);
+  }
+  `onFieldClick` `= item => {`
+  `if(!this.started)` {
+  `return;`
+  }
+  `if(item === 'carrot')` {
+  `this.score++;`
+  `sound.playCarrot();`
+  `this.updateScore();`
+  `if(this.carrotCount === this.score)` {
+  `this.finish(true);`
+  }
+  } `else if(item === 'bug')` {
+  `this.finish(false);`
+  }
+  }
+  `exit` `= () => {`
+  `this.started = false;`
+  `this.gameField.exit2();`
+  `this.initScore();`
+  `this.updateScore();`
+  `this.hideTimerAndScore();`
+  `this.stopGameTimer();`
+  `this.showStopBtn();`
+  `this.showGameBtn();`
+  `sound.stopBackground();`
+  `this.gameFinishpopUp.hide();`
+  }
+  `setgameStopListener(onGamestop)` {
+  `this.onGamestop = onGamestop;`
+  }
+  `finish(win)` {
+  `this.started = false;`
+  `this.stopGameTimer();`
+  `this.hideGameBtn();`
+  `this.onGamestop && this.onGamestop(win? 'win' : 'lose');`
+  `this.gameFinishpopUp.showWithText(win? 'You Won!' : 'You Lost!');`
+  `if(this.carrotCount === this.score)` {
+  `sound.playWin();`
+  `sound.stopBackground();`
+  } `else` {
+  `sound.playBug();`
+  `sound.stopBackground();`
+  }
+  }
+  `stop()` {
+  `this.started = false;`
+  `this.hideGameBtn();`
+  `this.stopGameTimer();`
+  `this.onGamestop && this.onGamestop('cancel');`
+  `this.gameFinishpopUp.showWithText('Replay? or Exit?');`
+  `sound.stopBackground();`
+  `sound.playAlert();`
+  }
+  `replay` `= () => {`
+  `this.started = false;`
+  `this.initScore();`
+  `this.updateScore();`
+  `this.start();`
+  `this.showGameBtn();`
+  `this.gameFinishpopUp.hide();`
+  }
+  `start()` {
+  `this.started = true;`
+  `this.showStopBtn();`
+  `this.showTimerAndScore();`
+  `this.startGameTimer();`
+  `this.init();`
+  `sound.playBackground();`
+  }
+  `init()` {
+  `this.gameField.init();`
+  }
+  `initScore()` {
+  `if (this.finish)` {
+  `this.score = 0;`
+  }
+  }
+  `updateScore()` {
+  `this.gameScore.innerText = this.carrotCount - this.score;`
+  }
+  `showGameBtn()` {
+  `this.gameBtn.style.visibility = 'visible';`
+  }
+  `hideGameBtn()` {
+  `this.gameBtn.style.visibility = 'hidden';`
+  }
+  `showStopBtn()` {
+  `const icon = document.querySelector('.fas');`
+  `if(this.started)`{
+  `icon.classList.add('fa-stop');`
+  `icon.classList.remove('fa-play');`
+  } `else` {
+  `icon.classList.add('fa-play');`
+  `icon.classList.remove('fa-stop');`
+  }
+  }
+  `hideTimerAndScore()` {
+  `if(!this.started)`{
+  `this.gameTimer.style.visibility = 'hidden';`
+  `this.gameScore.style.visibility = 'hidden';`
+  }
+  }
+  `showTimerAndScore()` {
+  `if(this.started)`{
+  `this.gameTimer.style.visibility = 'visible';`
+  `this.gameScore.style.visibility = 'visible';`
+  }
+  }
+  `stopGameTimer()` {
+  `clearInterval(this.timer);`
+  }
+  `startGameTimer()` {
+  `let RemainingTimeSec = this.durationSec;`
+  `this.updateTimeText(RemainingTimeSec);`
+  `this.timer` = `setInterval(() => {`
+  `if(RemainingTimeSec <= 0){`
+  `clearInterval(this.timer);`
+  `this.finish(this.carrotCount === this.score);`
+  `return;`
+  }
+  `this.updateTimeText(--RemainingTimeSec);`
+  `}, 1000);`
+  }
+  `updateTimeText(time)` {
+  `const Minutes = Math.floor(time / 60);`
+  `const Seconds = time % 60;`
+  `this.gameTimer.innerText = `${Minutes} : ${Seconds}`;`
+  }
+
+}
+
 ### 6. Resolution of failures
 
 #### 6-1.
@@ -940,3 +1106,50 @@
     `this.field.addEventListener`('click', `this.onClick`);
     }
     `onClick` `= event => {`
+
+#### 6-10.
+
+- symptom: game is not finished when not only removed carrot icon completely but also clicked bug icon. In addition, gameScore is not changed per removed carrot icon. And then, clicking on field even though game is not started. There is not error message. I think `onFieldClick()` can not refer the reference because `this.gameField.setClickListener(this.onFieldClick);` within `constructor()`. `finish()`, `updateScore()`, `if(!this.started){return;}` within `onFieldClick()` are not operated.
+
+- This error occurred when only operating game.js without popup.js.
+  <img src="./img/error12.gif" width="700" height="400">
+
+- countermeasure: it is not missing to type `this.gameField.setClickListener(this.onFieldClick);` within `constructor()`. The rule of this command is to operate `onFieldClick()` and functions on field.js together using callback function.
+
+#### 6-11.
+
+- symptom: `exit()` is not operated within `game.js` when clicking exit button. The error message is `Uncaught TypeError: Cannot read properties of undefined (reading exit2)`. `exit2()` on field.js can not be operated even though `exit()` on game.js is operated normally. In case of `this.gameFinishpopUp.setClickListener('exitBtn', this.exit);`, template of class on `field.js` can not be transfered to `popup.js` with `this.exit` when clicking `exitBtn`. `field.js` and `popup.js` are not imported directly each other, but `game.js` imports `field.js` and `popup.js`. So, `field.js` and `popup.js` seem like imported indirectly.
+
+- In case of game.js,
+  `import Field from './field.js';`
+  `import PopUp from './popup.js';`
+  `exit() {`
+  `this.started = false;`
+  `this.gameField.exit2();`
+  `this.initScore();`
+  `this.updateScore();`
+  `this.hideTimerAndScore();`
+  `this.stopGameTimer();`
+  `this.showStopBtn();`
+  `this.showGameBtn();`
+  `sound.stopBackground();`
+  `this.gameFinishpopUp.hide();`
+  }
+
+- <img src="./img/error13.gif" width="700" height="400">
+
+- countermeasure: `this` binding should be applied to. I think 3rd method is best useful to use binding among them. For example, `exit(){}` is should be changed to `exit = () => {}` with arrow function.
+
+- In case of game.js,
+  `exit = () => {`
+  `this.started = false;`
+  `this.gameField.exit2();`
+  `this.initScore();`
+  `this.updateScore();`
+  `this.hideTimerAndScore();`
+  `this.stopGameTimer();`
+  `this.showStopBtn();`
+  `this.showGameBtn();`
+  `sound.stopBackground();`
+  `this.gameFinishpopUp.hide();`
+  }
