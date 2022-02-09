@@ -4,7 +4,38 @@ import Field from './field.js';
 import PopUp from './popup.js';
 import * as sound from './sound.js';
 
-export default class Game {
+export default class GameBuilder {
+    gameDuration(duration) {
+        this.gameDuration = duration;
+        return this;
+    }
+
+    carrotCount(num) {
+        this.carrotCount = num;
+        return this;
+    }
+
+    bugCount(num) {
+        this.bugCount = num;
+        return this;
+    }
+
+    carrotSize(num) {
+        this.carrotSize = num;
+        return this;
+    }
+
+    build() {
+        return new Game(
+            this.gameDuration,
+            this.carrotCount,
+            this.bugCount,
+            this.carrotSize
+        )
+    }
+}
+
+class Game {
     constructor(gameDurationSec, carrotCount, bugCount, carrotSize) {
         this.gameDurationSec = gameDurationSec;
         this.carrotCount = carrotCount;

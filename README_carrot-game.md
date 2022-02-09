@@ -670,7 +670,7 @@
 
 - 4 arguments of `constructor()` on `game.js` are needed to use 4 variables as paremeter of class on `main.js`. `gameField` is object with class `Field`. The role of `gameField` is to use functions from field.js to game.js. `gameFinishpopup` is object with class `Popup`. The role of `gameFinishpopup` is to use functions from popup.js to game.js. The reason why `gameFinishpopup` is applied to game.js is to use `replay()` and `exit()` with class `Popup` on game.js. I can not use `replay()` and `exit()` on main.js because `replay()` and `exit()` are the functions on game.js. In case of `replay()` and `exit()`, this binding should be applied to because this binding prevents template of class from being not transfered when `field.js` and `popup.js` are imported indirectly. `onFieldClick = item => {}` is also use this binding on main.js because of `this.gameField.setClickListener(this.onFieldClick);`. In addition, most of variable needs `this.` to operate within class correctly on game.js. However, in case of `import * as sound from './sound.js';`, `this.` do not need to because sound was already inserted into current scope.
 
-- Use `setgameStopListener()` as callback function to display reason when stop the game.
+- Use `setgameStopListener()` as callback function to display reason when stop the game. In case you want to use parameter of callback function, this binding is also used. For example, First, `setgameStopListener(onGamestop)` is defined as callback function on `game.js`. Actually, `onGameStop` used as callback function. Second, `this.onGameStop && this.onGamestop();` should be used within `finish()` and `stop()` on `game.js`. onGamestop is used as callback function itself on only `game.js`. Finally, `game.setgameStopListener((reason) => {` should have this binding because `setgameStopListener` should use value of callback function such as `win` or `lose` of `this.onGamestop && this.onGamestop(win? 'win' : 'lose');` within `finish(win)` and `cancel` of `this.onGamestop && this.onGamestop('cancel');` within `stop()`.
 
 - `'use strict';`
   `import Field from './field.js';`
@@ -830,6 +830,51 @@
   `this.gameTimer.innerText = `${Minutes} : ${Seconds}`;`
   }
   }
+
+- In case of all codes, Please refer file named `refactoring/main.js`, and `refecotring/game.js`.
+
+#### 5-5. Builder Pattern
+
+- In case you do not want to export class named `Game`, please use builder pattern as export default to import on `main.js`. the good thing is to export only `Gamebuilder` without `Game`. `this.gameDuration = duration;` within `gameDuration()` means `gameDuration()` would be used as parameter of other function itself. So, this binding is also needed to transfer template of class. So, return value is this binding. Use `const game = new GameBuilder()` instead of `const game = new Game()` on `main.js`. Please remind `,` is not used `const game = new GameBuilder()` on `main.js`.
+
+- In case of game.js,
+  `export default class GameBuilder` {
+  `gameDuration(duration)` {
+  `this.gameDuration = duration;`
+  `return this;`
+  }
+  `carrotCount(num)` {
+  `this.carrotCount = num;`
+  `return this;`
+  }
+  `bugCount(num)` {
+  `this.bugCount = num;`
+  `return this;`
+  }
+  `carrotSize(num)` {
+  `this.carrotSize = num;`
+  `return this;`
+  }
+  `build()` {
+  `return new Game(`
+  `this.gameDuration,`
+  `this.carrotCount,`
+  `this.bugCount,`
+  `this.carrotSize`
+  `)`
+  }
+  }
+
+- In case of main.js,
+  `import GameBuilder from './game.js';`
+  `const game = new GameBuilder()`
+  `.gameDuration(10)`
+  `.carrotCount(10)`
+  `.bugCount(10)`
+  `.carrotSize(80)`
+  `.build();`
+
+- In case of all codes, Please refer file named `refactoring/main.js`, and `refecotring/game.js`.
 
 ### 6. Resolution of failures
 
