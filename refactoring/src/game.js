@@ -154,7 +154,7 @@ export default class Game {
     this.timer = setInterval(() => {
         if(RemainingTimeSec <= 0){
             clearInterval(this.timer); 
-            finish(this.carrotCount === this.score);
+            this.finish(this.carrotCount === this.score);
             return;
         }
         this.updateTimeText(--RemainingTimeSec);

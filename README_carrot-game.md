@@ -1,6 +1,6 @@
 ### 1. Project name: Creating application of carrot-game
 
-### 2. Period : 1 week 3 days
+### 2. Period : 1 week 4 days
 
 ### 3. Concept of game
 
@@ -35,9 +35,14 @@
   `<section class="game__field"></section>`
   `</section>`
   `<section class="pop-up pop-up--hide">`
+  `<div class="button__row">`
   `<button class="pop-up__refresh">`
   `<i class="fas fa-redo"></i>`
   `</button>`
+  `<button class="pop-up__exit">`
+  `<i class="fas fa-times"></i>`
+  `</button>`
+  `</div>`
   `<span class="pop-up__message">hello</span>`
   `</section>`
   `</body>`
@@ -50,7 +55,11 @@
 
 - In case of pop-up, CSS property is `background color: #00000090`. `#00000090` means black with opacity of 90%. In case you want only background to apply to opacity without others such as button, span, it would be efficient to use `#00000090`. In case you want to move layout of certain section, use `transform: translateX() or translateY()` such as `transform: translateY(-150%);`.
 
-- `.game` {
+- `body` {
+  `text-align: center;`
+  `background-color: black;`
+  }
+  `.game` {
   `display: flex;`
   `flex-direction: column;`
   `background: url(./img/background.png) center/cover;`
@@ -456,7 +465,9 @@
 
 ### 5. Refactoring carrot-game
 
-- The bad thing is not easy to manage and verify functions when changed point occur if codes are typed on just only one file even though application could operate normally. So, I think it would be better only one file is distrubuted to several files according to grouping functions. In case of distributed files as refactoring, I think there would be benefits from template. The template could be conveniently used for objects when you needed. So, this is the reason why we use template of class as refactoring. There are two examples. First, in case two type of cars need some of same functions, we could use refactoring file as source of two project cars regarding the same functions. Second, in case you want to manage grouped functions on distributed files like component, use refactoring with template of class. In addition, in case of simple appication, using refactoring with template of class is more difficult than function in function. However, please remind that refactoring is easier if complicated application because template of class could make objects easily when you needed. The keyword named`export default` should be typed on refactoring file, and then, the keyword named `import from` should be typed on main javascript file. For example, if `export default class Popup {}` defined from refactoring file, `import PopUp from './popup.js'` should be defined on main javascript file.
+- The bad thing is not easy to manage and verify functions when changed point occur if codes are typed on just only one file even though application could operate normally. So, I think it would be better only one file is distrubuted to several files according to grouping functions. In case of distributed files as refactoring, I think there would be benefits from template. The template could be conveniently used for objects when you needed. So, this is the reason why we use template of class as refactoring. There are two examples. First, in case two type of cars need some of same functions, we could use refactoring file as source of two project cars regarding the same functions. Second, in case you want to manage grouped functions on distributed files like component, use refactoring with template of class. In addition, in case of simple appication, using refactoring with template of class is more difficult than function in function. However, in case of complicated application, please remind that refactoring is easier to manage functions because template of class could make objects on any other files easily when you needed. The keyword named `export default` should be typed on refactoring file, and then, the keyword named `import from` should be typed on main javascript file. For example, if `export default class Popup {}` defined from refactoring file, `import PopUp from './popup.js'` should be defined on main javascript file.
+
+- Start of refactoring is to classify roles of application functions. In case of popup.js, the role is to show popup and to hide popup and to has callback function to call functions when clicking buttons of popup. In case of field.js, the role is to add icons of carrots and bugs and to remove icon of carrots and to has callback functions to call functions when `start()`, `finish()` and `stop()`.
 
 #### 5-1. Popup class
 
@@ -507,7 +518,7 @@
 
 #### 5-2. Field class
 
-- Fields parameters are defined as `Carrot_Count`, `Bug_Count`, `Carrot_Size` because these variable could get from main.js. In case of methods, some of functions are moved from main.js to class of field.js considering field rules of application. `onFieldClick()` from main.js is distributed to not only `onClick()` on `field.js` but also `onFieldClick()` on `main.js` according to the rules of application. `this.onItemClick && this.onItemClick('carrot')` is used with callback function to operate `onClick()` and `onFieldClick()` at the same time. `'carrot'` and `'bug'` is used as callback function parameter to set up operation condition. In addition, functions named `randomNumber()` and `playSound()` are used as static function because these functions would use on only field.js. In case of using function on only this javascript file, you can use static function, rather than method of class. In case of `if(item === 'carrot')` and `if(item === 'bug')` of `onFieldClick()` on main.js, application images of carrot and bug are item and `event.target` would be duplicated between `onClick()` and `onFieldClick()` if I use target. I use item rather than target to optimize the memory. In case of javascript, please remind template of class can not be transfered if the function is within other function. `this` binding should be used to transfer template of class to the function within other function.
+- Fields parameters of `constructor()` are defined as `carrotCount`, `bugCount`, `carrotSize` to apply arguments of object when `this.gameField = new Field(this.carrotCount, this.bugCount, this.carrotSize);` on `game.js`. In case of methods, some of functions are moved from `game.js` to within class on `field.js` considering field roles of application. `onFieldClick()` from `game.js` is distributed to not only `onClick()` on `field.js` but also `onFieldClick()` on `game.js` according to the roles of application. `this.onItemClick && this.onItemClick('carrot')` is used with callback function to operate `onClick()` and `onFieldClick()` at the same time. `'carrot'` and `'bug'` is used as parameter of callback function to set up operation condition. For example, functions should be operated related to `carrot` when clicking icon of carrot. In addition, functions named `randomNumber()` and `playSound()` are used as static function because these functions would use on only `field.js`. In case of only using the function on this javascript file, you can use static function, rather than method of class. In case of `if(item === 'carrot')` and `if(item === 'bug')` of `onFieldClick()` on game.js, icons of carrot and bug are `item` with `event.target` on `field.js` and this binding should be used if `item` and `event.target` are refered on `game.js` without undefined value. In case of javascript, please remind template of class can not be transfered if the function is within other function. `this` binding should be used to transfer template of class to the function within other function. In case you do not use `this.` of `this.fieldRect.width` or `this.fieldRect.height`, icons of carrots and bugs do not diplayed on field area. So, In case icons do not displayed on field area, please check values related to coordinates.
 
 - Add `import * as sound from './sound.js';` to refer the reference of sound on sound.js.
 
@@ -567,25 +578,25 @@
   `return Math.random() \* (max - min) + min;`
   }
 
-- In case of main.js,
-  `const gameField = new Field(Carrot_Count, Bug_Count, Carrot_Size);`
-  `gameField.setClickListener(onFieldClick);`
-  `function onFieldClick()` {
-  `if(!started)` {
+- In case of game.js,
+  `this.gameField = new Field(Carrot_Count, Bug_Count, Carrot_Size);`
+  `this.gameField.setClickListener(this.onFieldClick);`
+  `onFieldClick()` {
+  `if(!this.started)` {
   `return;`
   }
   `if(item === 'carrot')` {
-  `score++;`
-  `updateScore();`
-  `if(Carrot_Count === score)` {
-  `finishGame(true);`
+  `this.score++;`
+  `this.updateScore();`
+  `if(this.carrotCount === this.score)` {
+  `this.finish(true);`
   }
   } `else if(item === 'bug')` {
-  `finishGame(false);`
+  `this.finish(false);`
   }
   }
-  `function exitGame()` {
-  `gameField.exit();`
+  `exit()` {
+  `this.gameField.exit();`
   }
 
 - In case of all codes, Please refer file named `refactoring/main.js` and `refecotring/field.js`.
@@ -657,7 +668,7 @@
 
 #### 5-4. Game class
 
-- 4 arguments of `constructor()` on `game.js` are needed to use 4 variables as paremeter of class on `main.js`. `gameField` is object with class `Field`. The rule of `gameField` is to use functions from field.js to game.js. `gameFinishpopup` is object with class `Popup`. The rule of `gameFinishpopup` is to use functions from popup.js to game.js. The reason why `gameFinishpopup` is applied to game.js is to use `replay()` and `exit()` with class `Popup` on game.js. I can not use `replay()` and `exit()` on main.js because `replay()` and `exit()` are the functions on game.js. In case of `replay()` and `exit()`, this binding should be applied to because this binding prevents template of class from not transfered when `field.js` and `popup.js` are imported indirectly. In addition, most of variable needs `this.` to operate within class correctly. However, in case of `import * as sound from './sound.js';`, `this.` do not need to because sound was already inserted into current scope.
+- 4 arguments of `constructor()` on `game.js` are needed to use 4 variables as paremeter of class on `main.js`. `gameField` is object with class `Field`. The role of `gameField` is to use functions from field.js to game.js. `gameFinishpopup` is object with class `Popup`. The role of `gameFinishpopup` is to use functions from popup.js to game.js. The reason why `gameFinishpopup` is applied to game.js is to use `replay()` and `exit()` with class `Popup` on game.js. I can not use `replay()` and `exit()` on main.js because `replay()` and `exit()` are the functions on game.js. In case of `replay()` and `exit()`, this binding should be applied to because this binding prevents template of class from being not transfered when `field.js` and `popup.js` are imported indirectly. `onFieldClick = item => {}` is also use this binding on main.js because of `this.gameField.setClickListener(this.onFieldClick);`. In addition, most of variable needs `this.` to operate within class correctly on game.js. However, in case of `import * as sound from './sound.js';`, `this.` do not need to because sound was already inserted into current scope.
 
 - Use `setgameStopListener()` as callback function to display reason when stop the game.
 
@@ -818,8 +829,7 @@
   `const Seconds = time % 60;`
   `this.gameTimer.innerText = `${Minutes} : ${Seconds}`;`
   }
-
-}
+  }
 
 ### 6. Resolution of failures
 

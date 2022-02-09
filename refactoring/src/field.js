@@ -1,10 +1,10 @@
 import * as sound from './sound.js';
 
 export default class Field {
-    constructor(Carrot_Count, Bug_Count, Carrot_Size) {
-        this.Carrot_Count = Carrot_Count;
-        this.Bug_Count = Bug_Count;
-        this.Carrot_Size = Carrot_Size;
+    constructor(carrotCount, bugCount, carrotSize) {
+        this.carrotCount = carrotCount;
+        this.bugCount = bugCount;
+        this.carrotSize = carrotSize;
         this.field = document.querySelector('.game__field');
         this.fieldRect = this.field.getBoundingClientRect();
         this.field.addEventListener('click', (event) => this.onClick(event));
@@ -16,8 +16,8 @@ export default class Field {
 
     init() {
         this.field.innerHTML = ``;
-        this.addItem('carrot', this.Carrot_Count, 'img/carrot.png');
-        this.addItem('bug', this.Bug_Count, 'img/bug.png');
+        this.addItem('carrot', this.carrotCount, 'img/carrot.png');
+        this.addItem('bug', this.bugCount, 'img/bug.png');
     }
 
     exit() {
@@ -27,8 +27,8 @@ export default class Field {
     addItem(className, count, imgPath) {
         const x1 = 0;
         const y1 = 0;
-        const x2 = this.fieldRect.width - this.Carrot_Size;
-        const y2 = this.fieldRect.height - this.Carrot_Size;
+        const x2 = this.fieldRect.width - this.carrotSize;
+        const y2 = this.fieldRect.height - this.carrotSize;
         for(let i=0; i < count; i++) {
             const item = document.createElement('img');
             item.setAttribute('class', className);
