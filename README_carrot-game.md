@@ -1,6 +1,6 @@
 ### 1. Project name: Creating application of carrot-game
 
-### 2. Period : 1 week 4 days
+### 2. Period : 1 week 5 days
 
 ### 3. Concept of game
 
@@ -471,7 +471,7 @@
 
 #### 5-1. Popup class
 
-- Variables within `constructor()` should be defined with `this` insted of keyword named `const`. Please think `this` is one of class syntax for easy understanding. In case of `addEventListener`, it could be included within `constructor()`. `this.onClick && this.onClick()` is same as `if(this.onClick){this.onClick();}`. `setClickListener(onClick)` means that this.onClick is defined callback function. So, not only `this.onClick && this.onClick()` but also `setClickListener(onClick)` are needed to use callback function within class. In case of functions related to the class, the functions you want could be defined as method of class. Each of element within function needs `this` because the function is one of class methods. In case of function named `showWithText(text)`, is renamed from `showPopupwithText(text)`. `Popup` of `showPopupwithText(text)` do not need to because the function is within class named `Popup`. This is duplicated. In case of function named `hide()`, it could be included within `constructor()` and it should be defined as `this.hide()` to refer the reference instead of `hide()`. `Uncaught ReferenceError` maybe occur if you use `hide()`. The reason why I use `this.PopupBtn.addEventListener('click', ()=> {this.onClick && this.onClick(); this.hide();});` rather than `this.PopupBtn.addEventListener('click', onClick());` is that `this.hide()` should be operated when clicking `PopupBtn`.
+- Variables within `constructor()` should be defined with `this` insted of keyword named `const`. Please think `this` is one of class syntax for easy understanding. In case of `addEventListener`, it could be included within `constructor()`. `this.onClick && this.onClick()` is same as `if(this.onClick){this.onClick();}`. `setClickListener(onClick)` means that this.onClick is defined callback function. So, not only `this.onClick && this.onClick()` but also `setClickListener(onClick)` are needed to use callback function within class. In case of functions related to the class, the functions you want could be defined as method of class. Each of element within function needs `this` because the function is one of class methods. In case of function named `showWithText(text)`, is renamed from `showPopupwithText(text)`. `Popup` of `showPopupwithText(text)` do not need to because the function is within class named `Popup`. This is duplicated. Please use `showWithText(text)` within function you want on `game.js` to display popup tab on application. In case of function named `hide()`, it could be included within `constructor()` and it should be defined as `this.hide()` to refer the reference instead of `hide()`. `Uncaught ReferenceError` maybe occur if you use `hide()`. The reason why I use `this.PopupBtn.addEventListener('click', ()=> {this.onClick && this.onClick(); this.hide();});` rather than `this.PopupBtn.addEventListener('click', onClick());` is that `this.hide()` should be operated when clicking `PopupBtn`.
 
 - In popup.js,
   `export default class PopUp` {
@@ -497,28 +497,47 @@
   }
   }
 
-- In main.js,
-  `const gameFinishpopUp = new PopUp();`
-  `gameFinishpopUp.setClickListener('PopupBtn', replayGame);`
-  `gameFinishpopUp.setClickListener('exitBtn', exitGame);`
-  `function exitGame()` {
-  `gameFinishpopUp.hide();`
+- In game.js,
+  `this.gameFinishpopUp = new PopUp();`
+  `this.gameFinishpopUp.setClickListener('PopupBtn', this.replay);`
+  `this.gameFinishpopUp.setClickListener('exitBtn', this.exit);`
+  `exit = () =>` {
+  `this.gameFinishpopUp.hide();`
   }
-  `function replayGame()` {
-  `gameFinishpopUp.hide();`
+  `replay = () =>` {
+  `this.gameFinishpopUp.hide();`
   }
-  `function finishGame(win)` {
-  `gameFinishpopUp.showWithText(win? 'You Won!' : 'You Lost!');`
+  `finish(win)` {
+  `this.onGamestop && this.onGamestop(win? 'win' : 'lose');`
   }
-  `function stopGame()` {
-  `gameFinishpopUp.showWithText('Replay? or Exit?');`
+  `stop()` {
+  `this.onGamestop && this.onGamestop('cancel');`
   }
 
-- In case of all codes, Please refer file named `refactoring/main.js` and `refecotring/popup.js`.
+- In main.js,
+  `game.setGameStopListener((reason) => {`
+  `let message;`
+  `switch (reason)` {
+  `case 'cancel':`
+  `message = 'Replay? or Exit?';`
+  `break;`
+  `case 'win':`
+  `message = 'You Won!';`
+  `break;`
+  `case 'lose':`
+  `message = 'You Lost!';`
+  `break;`
+  `default:`
+  `throw new Error('not valid reason');`
+  }
+  `gameFinishpopUp.showWithText(message);`
+  })
+
+- In case of all codes, Please refer file named `refactoring/game.js`, `refactoring/main.js` and `refecotring/popup.js`.
 
 #### 5-2. Field class
 
-- Fields parameters of `constructor()` are defined as `carrotCount`, `bugCount`, `carrotSize` to apply arguments of object when `this.gameField = new Field(this.carrotCount, this.bugCount, this.carrotSize);` on `game.js`. In case of methods, some of functions are moved from `game.js` to within class on `field.js` considering field roles of application. `onFieldClick()` from `game.js` is distributed to not only `onClick()` on `field.js` but also `onFieldClick()` on `game.js` according to the roles of application. `this.onItemClick && this.onItemClick('carrot')` is used with callback function to operate `onClick()` and `onFieldClick()` at the same time. `'carrot'` and `'bug'` is used as parameter of callback function to set up operation condition. For example, functions should be operated related to `carrot` when clicking icon of carrot. In addition, functions named `randomNumber()` and `playSound()` are used as static function because these functions would use on only `field.js`. In case of only using the function on this javascript file, you can use static function, rather than method of class. In case of `if(item === 'carrot')` and `if(item === 'bug')` of `onFieldClick()` on game.js, icons of carrot and bug are `item` with `event.target` on `field.js` and this binding should be used if `item` and `event.target` are refered on `game.js` without undefined value. In case of javascript, please remind template of class can not be transfered if the function is within other function. `this` binding should be used to transfer template of class to the function within other function. In case you do not use `this.` of `this.fieldRect.width` or `this.fieldRect.height`, icons of carrots and bugs do not diplayed on field area. So, In case icons do not displayed on field area, please check values related to coordinates.
+- Fields parameters of `constructor()` are defined as `carrotCount`, `bugCount`, `carrotSize` to apply arguments of object when `this.gameField = new Field(this.carrotCount, this.bugCount, this.carrotSize);` on `game.js`. In case of methods, some of functions are moved from `game.js` to within class on `field.js` considering field roles of application. `onFieldClick()` from `game.js` is distributed to not only `onClick()` on `field.js` but also `onFieldClick()` on `game.js` according to the roles of application. `this.onItemClick && this.onItemClick('carrot')` is used with callback function to operate `onClick()` and `onFieldClick()` at the same time. `'carrot'` and `'bug'` is used as parameter of callback function to set up operation condition. For example, functions should be operated related to `carrot` when clicking icon of carrot. In addition, functions named `randomNumber()` and `playSound()` are used as static function because these functions would use on only `field.js`. In case of only using the function on this javascript file, you can use static function, rather than method of class. In case of `if(item === 'carrot')` and `if(item === 'bug')` of `onFieldClick()` on game.js, icons of carrot and bug are `item` with `event.target` on `field.js` and this binding should be used if `item` and `event.target` are refered on `game.js` without undefined value. In case of javascript, please remind template of class can not be transfered if the function is within other function. `this` binding should be used to transfer template of class to the function within other function. In case you do not use `this.` of `this.fieldRect.width` or `this.fieldRect.height`, icons of carrots and bugs do not displayed on field area. So, In case icons do not displayed on field area, please check values related to coordinates.
 
 - Add `import * as sound from './sound.js';` to refer the reference of sound on sound.js.
 
@@ -835,7 +854,7 @@
 
 #### 5-5. Builder Pattern
 
-- In case you do not want to export class named `Game`, please use builder pattern as export default to import on `main.js`. the good thing is to export only `Gamebuilder` without `Game`. `this.gameDuration = duration;` within `gameDuration()` means `gameDuration()` would be used as parameter of other function itself. So, this binding is also needed to transfer template of class. So, return value is this binding. Use `const game = new GameBuilder()` instead of `const game = new Game()` on `main.js`. Please remind `,` is not used `const game = new GameBuilder()` on `main.js`.
+- In case you do not want to export class named `Game`, please use builder pattern as export default to import on `main.js`. the good thing is to export only `Gamebuilder` without `Game`. In addition, the goal of using builder pattern is to prevent your human error. It is easier to manage variables because you do not need to define any variable on main.js. `this.gameDuration = duration;` within `gameDuration()` means `gameDuration()` would be used as parameter of other function itself. So, this binding is also needed to transfer template of class. So, return value is this binding. Use `const game = new GameBuilder()` instead of `const game = new Game()` on `main.js`. Please remind `,` is not used `const game = new GameBuilder()` on `main.js`.
 
 - In case of game.js,
   `export default class GameBuilder` {
@@ -1207,4 +1226,42 @@
   `this.showGameBtn();`
   `sound.stopBackground();`
   `this.gameFinishpopUp.hide();`
+  }
+
+#### 6-12.
+
+- symptom: Uncaught TypeError message was displayed on console tab such as `this.durationSec is not a function`. In addtion, `intermediate value error` occurred intermittently. I used variables on `GameBuilder` with same name variables on `Game` together at only one file. I think conflict of variable between `GameBuilder` and `Game` maybe occurred.
+
+- In case of game.js,
+  `export default class GameBuilder` {
+  `build()` {
+  `return new Game(`
+  `this.gameduration(),`
+  `this.carrotcount(),`
+  `this.bugcount(),`
+  `this.carrotsize()`
+  )
+  }
+  }
+
+  In case of main.js,
+  `const game` = `new GameBuilder()`
+  `.gameduration(10)`
+  `.carrotcount(10)`
+  `.bugcount(10)`
+  `.carrotsize(80)`
+  `.build();`
+
+- <img src="./img/error8.png" width="700" height="250">
+
+- countermeasure: parameters just use as parameter of object returned `new Game` such as `gameduration`, `carrotcount`, `bugcount`, `carrotsize`. In addition, use diffrent variables from parameters of `constructor()` within `class Game` to prevent conflict of variables between `class GameBuilder` and `class Game`. In case of using same variables on the same javascript file, there maybe are error message regarding `intermediate values` or malfunction without error message. So, please use different variables.
+
+- In case of game.js,
+  `build()` {
+  `return new Game(`
+  `this.gameduration,`
+  `this.carrotcount,`
+  `this.bugcount,`
+  `this.carrotsize`
+  )
   }
