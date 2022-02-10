@@ -4,6 +4,12 @@ import Field from './field.js';
 import PopUp from './popup.js';
 import * as sound from './sound.js';
 
+export const Reason = Object.freeze({
+    cancel: 'cancel',
+    win: 'win',
+    lose: 'lose'
+});
+
 export default class GameBuilder {
     gameDuration(duration) {
         this.gameDuration = duration;
@@ -27,10 +33,10 @@ export default class GameBuilder {
 
     build() {
         return new Game(
-            this.gameDuration(),
-            this.carrotCount(),
-            this.bugCount(),
-            this.carrotSize()
+            this.gameDuration,
+            this.carrotCount,
+            this.bugCount,
+            this.carrotSize
         )
     }
 }
@@ -104,7 +110,7 @@ class Game {
     this.started = false;
     this.stopGameTimer();
     this.hideGameBtn();
-    this.onGamestop && this.onGamestop(win? 'win' : 'lose');
+    this.onGamestop && this.onGamestop(win? Reason.win : Reason.lose);
     if(this.carrotCount === this.score) {
         sound.playWin();
         sound.stopBackground();
@@ -118,7 +124,7 @@ class Game {
     this.started = false;
     this.hideGameBtn();
     this.stopGameTimer();
-    this.onGamestop && this.onGamestop('cancel');
+    this.onGamestop && this.onGamestop(Reason.cancel);
     sound.stopBackground();
     sound.playAlert();
     }

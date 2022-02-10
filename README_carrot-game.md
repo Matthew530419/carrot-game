@@ -895,6 +895,42 @@
 
 - In case of all codes, Please refer file named `refactoring/main.js`, and `refecotring/game.js`.
 
+#### 5-6. How to offer object type as typescript
+
+- In case of parameter `reason`, developer could have mis-typing codes because of string type. In case of string type, vscode do not fix mis-typing. vscode could help developer use defined content such as variable, function. So, use `Object.freeze()` to prevent your fault from mis-typing. In case of `Object.freeze()`, key and value can not be changed. So, `Object.freeze()` maybe would be used as checking and display DTC between current and history.
+
+- In case of game.js,
+  `export` `const Reason = Object.freeze({`
+  `cancel: 'cancel',`
+  `win: 'win',`
+  `lose: 'lose'`
+  });
+  `finish(win)` {
+  `this.onGamestop && this.onGamestop(win? Reason.win : Reason.lose);`
+  }
+  `stop()` {
+  `this.onGamestop && this.onGamestop(Reason.cancel);`
+  }
+
+- In case of main.js,
+  `game.setgameStopListener((reason) => {`
+  `let message;`
+  `switch (reason)` {
+  `case Reason.cancel:`
+  `message = 'Replay? or Exit';`
+  `break;`
+  `case Reason.win:`
+  `message = 'You Won!'`
+  `break;`
+  `case Reason.lose:`
+  `message = 'You Lost!'`
+  `break;`
+  `default:`
+  `throw new Error('invalid reason');`
+  }
+  `gameFinishpopUp.showWithText(message);`
+  })
+
 ### 6. Resolution of failures
 
 #### 6-1.
