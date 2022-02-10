@@ -27,10 +27,10 @@ export default class GameBuilder {
 
     build() {
         return new Game(
-            this.gameDuration,
-            this.carrotCount,
-            this.bugCount,
-            this.carrotSize
+            this.gameDuration(),
+            this.carrotCount(),
+            this.bugCount(),
+            this.carrotSize()
         )
     }
 }

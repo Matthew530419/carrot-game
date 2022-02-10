@@ -1230,26 +1230,26 @@
 
 #### 6-12.
 
-- symptom: Uncaught TypeError message was displayed on console tab such as `this.durationSec is not a function`. In addtion, `intermediate value error` occurred intermittently. I used variables on `GameBuilder` with same name variables on `Game` together at only one file. I think conflict of variable between `GameBuilder` and `Game` maybe occurred.
+- symptom: Uncaught TypeError message was displayed on console tab such as `this.durationSec is not a function`. In addtion, `intermediate value error` occurred intermittently. I used variables on `GameBuilder` with same name variables on `Game` together at only one file. I think conflict of variables between `GameBuilder` and `Game` maybe occurred.
 
 - In case of game.js,
   `export default class GameBuilder` {
   `build()` {
   `return new Game(`
-  `this.gameduration(),`
-  `this.carrotcount(),`
-  `this.bugcount(),`
-  `this.carrotsize()`
+  `this.gameDuration(),`
+  `this.carrotCount(),`
+  `this.bugCount(),`
+  `this.carrotSize()`
   )
   }
   }
 
   In case of main.js,
   `const game` = `new GameBuilder()`
-  `.gameduration(10)`
-  `.carrotcount(10)`
-  `.bugcount(10)`
-  `.carrotsize(80)`
+  `.gameDuration(10)`
+  `.carrotCount(10)`
+  `.bugCount(10)`
+  `.carrotSize(80)`
   `.build();`
 
 - <img src="./img/error8.png" width="700" height="250">
