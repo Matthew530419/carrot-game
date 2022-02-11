@@ -691,6 +691,8 @@
 
 - Use `setgameStopListener()` as callback function to display reason when stop the game. In case you want to use parameter of callback function, this binding is also used. For example, First, `setgameStopListener(onGamestop)` is defined as callback function on `game.js`. Actually, `onGameStop` used as callback function. Second, `this.onGameStop && this.onGamestop();` should be used within `finish()` and `stop()` on `game.js`. onGamestop is used as callback function itself on only `game.js`. Finally, `game.setgameStopListener((reason) => {` should have this binding because `setgameStopListener` should use value of callback function such as `win` or `lose` of `this.onGamestop && this.onGamestop(win? 'win' : 'lose');` within `finish(win)` and `cancel` of `this.onGamestop && this.onGamestop('cancel');` within `stop()`.
 
+- I think `onFieldClick()` do not need to have `if(!this.started){return;}` because `onFieldClick()` could refer the reference of `onClick()` on `field.js`. `event.target` is contained to `onClick()`. `onClick()` would maybe not be operated before `onFieldClick()` calls `onClick()`. So, `if(!this.started){return;}` is not needed to have.
+
 - `'use strict';`
   `import Field from './field.js';`
   `import PopUp from './popup.js';`
@@ -721,9 +723,9 @@
   `this.gameFinishpopUp.setClickListener`(`'exitBtn', this.exit`);
   }
   `onFieldClick` `= item => {`
-  `if(!this.started)` {
-  `return;`
-  }
+  `//if(!this.started) {`
+  `//return;`
+  `//}`
   `if(item === 'carrot')` {
   `this.score++;`
   `sound.playCarrot();`
@@ -897,7 +899,29 @@
 
 #### 5-6. How to offer object type as typescript
 
-- In case of parameter `reason`, developer could have mis-typing codes because of string type. In case of string type, vscode do not fix mis-typing. vscode could help developer use defined content such as variable, function. So, use `Object.freeze()` to prevent your fault from mis-typing. In case of `Object.freeze()`, key and value can not be changed. So, `Object.freeze()` maybe would be used as checking and display DTC between current and history. In case of the last key value such as `lose: 'lose'`, it do not need to have `,`.
+- In case of parameter `reason`, developer could have mis-typing codes because of string type. In case of string type, vscode do not fix mis-typing. vscode could help developer use defined content such as variable, function. So, use `Object.freeze()` to prevent your fault from mis-typing. In case of `Object.freeze()`, key and value can not be changed. So, `Object.freeze()` maybe would be used as checking and display DTC between current and history. In case of the last key value such as `lose: 'lose'`, it do not need to have `,`. In addition, in case of the last key value such as `bug: 'bug'` it also do not need to have `,`.
+
+- In case of field.js,
+  `export const itemType = Object.freeze({`
+  `carrot: 'carrot',`
+  `bug: 'bug'`
+  })
+  `init()` {
+  ` this.field.innerHTML = ``; `
+  `this.addItem(itemType.carrot, this.carrotCount, 'img/carrot.png');`
+  `this.addItem(itemType.bug, this.bugCount, 'img/bug.png');`
+  }
+  `onClick (event)` {
+  `const target = event.target;`
+  `if(target.matches('.carrot'))` {
+  `target.remove();`
+  `sound.playCarrot();`
+  `this.onItemClick && this.onItemClick(itemType.carrot);`
+  } `else if(target.matches('.bug'))` {
+  `this.onItemClick && this.onItemClick(itemType.bug);`
+  }
+  }
+  }
 
 - In case of game.js,
   `export` `const Reason = Object.freeze({`
@@ -931,9 +955,13 @@
   `gameFinishpopUp.showWithText(message);`
   })
 
+- In case of all codes, Please refer file named `refactoring/field.js`, and `refecotring/game.js`.
+
 #### 5-7. Combine functions simply
 
-- Since the reason was defined as `Object.freeze()` regarding game stop, we do not need to divide functions named `stop()` and `finish()`. `stop()` and `finish()` have different reason about game stop and they need different function when different situation. So, I will combine their functions as `stop()`. `reason` should be defined within `this.stop()` such as `this.stop(Reason.cancel)`, `this.stop(Reason.win)`, `this.stop(Reason.lose)`. There would be displayed defined `throw new Error` like `not valid reason`.
+- Since the reason was defined as `Object.freeze()` regarding game stop, we do not need to divide functions named `stop()` and `finish()`. `stop()` and `finish()` have different reason about game stop and they need different function when different situation. So, I will combine their functions as `stop()`. `reason` should be defined within `this.stop()` such as `this.stop(Reason.cancel)`, `this.stop(Reason.win)`, `this.stop(Reason.lose)`. There would be displayed defined `throw new Error` like `not valid reason`. In addition,
+
+- In case of final_field.js,
 
 - In case of final_game1.js,
   `this.gameBtn.addEventListener`(`'click'`, ()=> {

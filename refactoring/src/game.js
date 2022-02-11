@@ -67,9 +67,10 @@ class Game {
         })
     }
     onFieldClick = (item) => {
-    if(!this.started) {
-        return;
-    }
+    //if(!this.started) {
+    //    return;
+    //}
+    console.log('click!');
     if(item === 'carrot') {
         this.score++;
         this.updateScore();
