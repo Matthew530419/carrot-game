@@ -1,6 +1,6 @@
 ### 1. Project name: Creating application of carrot-game
 
-### 2. Period : 1 week 5 days
+### 2. Period : 2 weeks
 
 ### 3. Concept of game
 
@@ -897,7 +897,7 @@
 
 #### 5-6. How to offer object type as typescript
 
-- In case of parameter `reason`, developer could have mis-typing codes because of string type. In case of string type, vscode do not fix mis-typing. vscode could help developer use defined content such as variable, function. So, use `Object.freeze()` to prevent your fault from mis-typing. In case of `Object.freeze()`, key and value can not be changed. So, `Object.freeze()` maybe would be used as checking and display DTC between current and history.
+- In case of parameter `reason`, developer could have mis-typing codes because of string type. In case of string type, vscode do not fix mis-typing. vscode could help developer use defined content such as variable, function. So, use `Object.freeze()` to prevent your fault from mis-typing. In case of `Object.freeze()`, key and value can not be changed. So, `Object.freeze()` maybe would be used as checking and display DTC between current and history. In case of the last key value such as `lose: 'lose'`, it do not need to have `,`.
 
 - In case of game.js,
   `export` `const Reason = Object.freeze({`
@@ -930,6 +930,104 @@
   }
   `gameFinishpopUp.showWithText(message);`
   })
+
+#### 5-7. Combine functions simply
+
+- Since the reason was defined as `Object.freeze()` regarding game stop, we do not need to divide functions named `stop()` and `finish()`. `stop()` and `finish()` have different reason about game stop and they need different function when different situation. So, I will combine their functions as `stop()`. `reason` should be defined within `this.stop()` such as `this.stop(Reason.cancel)`, `this.stop(Reason.win)`, `this.stop(Reason.lose)`. There would be displayed defined `throw new Error` like `not valid reason`.
+
+- In case of final_game1.js,
+  `this.gameBtn.addEventListener`(`'click'`, ()=> {
+  `if (this.started)` {
+  `this.stop(Reason.cancel);`
+  } `else` {
+  `this.start();`
+  }
+  })
+  `onFieldClick = item => {`
+  `if(!this.started)` {
+  `return;`
+  }
+  `if(item === 'carrot')` {
+  `this.score++;`
+  `sound.playCarrot();`
+  `this.updateScore();`
+  `if(this.carrotCount === this.score)` {
+  `this.stop(Reason.win);`
+  }
+  } `else if(item === 'bug')` {
+  `this.stop(Reason.lose);`
+  }
+  }
+  `stop(reason)` {
+  `this.started = false;`
+  `this.hideGameBtn();`
+  `this.stopGameTimer();`
+  `sound.stopBackground();`
+  `this.onGamestop && this.onGamestop(reason);`
+  `switch(reason)` {
+  `case Reason.cancel:`
+  `sound.playAlert();`
+  `break;`
+  `case Reason.win:`
+  `sound.playWin();`
+  `break;`
+  `case Reason.lose:`
+  `sound.playBug();`
+  `break;`
+  `default:`
+  `throw new Error('not valid reason');`
+  }
+  }
+  `startGameTimer()` {
+  `let RemainingTimeSec = this.durationSec;`
+  `this.updateTimeText(RemainingTimeSec);`
+  `this.timer = setInterval(() => {`
+  `if(RemainingTimeSec <= 0)`{
+  `clearInterval(this.timer);`
+  `this.stop(this.carrotCount === this.score);`
+  `return;`
+  }
+  `this.updateTimeText(--RemainingTimeSec);`
+  }, `1000);`
+  }
+
+- In case of all codes, Please refer file named `refactoring/main.js`, and `refecotring/final_game1.js`.
+
+- However, we already have same test case of switch loop regarding message on main.js. So, I will combine functions once again regarding switch loop. Please add `import * as sound from './sound.js';` on `final_main.js` because sound should be imported.
+
+- In case of final_game2.js,
+  `stop(reason)` {
+  `this.started = false;`
+  `this.hideGameBtn();`
+  `this.stopGameTimer();`
+  `this.onGamestop && this.onGamestop(reason);`
+  }
+
+- In case of final_main.js,
+  `import * as sound from './sound.js';`
+  `game.setGameStopListener((reason) => {`
+  `let message;`
+  `switch (reason)` {
+  `case Reason.cancel:`
+  `sound.playAlert();`
+  `message = 'Replay? or Exit?';`
+  `break;`
+  `case Reason.win:`
+  `sound.playWin();`
+  `message = 'You Won!';`
+  `break;`
+  `case Reason.lose:`
+  `sound.playBug();`
+  `message = 'You Lost!';`
+  `break;`
+  `default:`
+  `throw new Error('not valid reason');`
+  }
+  `sound.stopBackground();`
+  `gameFinishpopUp.showWithText(message);`
+  })
+
+- In case of all codes, Please refer file named `refactoring/final_main.js`, and `refecotring/final_game2.js`.
 
 ### 6. Resolution of failures
 
